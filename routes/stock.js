@@ -1,6 +1,6 @@
-var express = require("express");
+const express = require("express");
 const { aviablePizzas } = require("../controllers/stockController");
-var router = express.Router();
+const router = express.Router();
 
 router.get("/aviablePizzas", aviablePizzas);
 

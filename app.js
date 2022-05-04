@@ -8,6 +8,9 @@ const cors = require("cors");
 
 const indexRouter = require("./routes/index");
 const pizzasRouter = require("./routes/pizzas");
+const stockRouter = require("./routes/stock");
+const categoryRouter = require("./routes/category");
+const errorHandler = require("./middleware/ErrorHandlingMiddleware");
 
 const app = express();
 
@@ -20,6 +23,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/pizzas", pizzasRouter);
+app.use("/stock", stockRouter);
+app.use("/category", categoryRouter);
+
+app.use(errorHandler);
 
 const start = async () => {
   try {
