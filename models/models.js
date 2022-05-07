@@ -1,5 +1,6 @@
 const sequelize = require("../db");
 const { DataTypes } = require("sequelize");
+const { ROLES } = require("../utils/constants/userRolesConsts");
 
 const PizzasModel = sequelize.define("pizzas", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -37,6 +38,30 @@ const CategoryModel = sequelize.define("categories", {
   name: { type: DataTypes.STRING(255) },
 });
 
+const PizzaOrdersModel = sequelize.define("pizzaOrders", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  orderID: { type: DataTypes.INTEGER },
+  pizzaID: { type: DataTypes.INTEGER },
+  count: { type: DataTypes.INTEGER },
+  props: { type: DataTypes.STRING(225) },
+});
+
+const UserOrdersModel = sequelize.define(
+  "userOrders",
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    userID: { type: DataTypes.INTEGER },
+  },
+  { timestamps: true }
+);
+
+const UsersModel = sequelize.define("users", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  phoneNumber: { type: DataTypes.STRING(45) },
+  password: { type: DataTypes.STRING(45) },
+  role: { type: DataTypes.STRING(45), defaultValue: ROLES.user },
+});
+
 /* PizzasModel.hasOne(CategoryModel);
 CategoryModel.belongsTo(PizzasModel); */
 
@@ -46,9 +71,28 @@ TypesModel.belongsToMany(PizzasModel, { through: PizzaTypesModel });
 PizzasModel.belongsToMany(SizesModel, { through: PizzaSizesModel });
 SizesModel.belongsToMany(PizzasModel, { through: PizzaSizesModel });
 
+/* PizzasModel.belongsToMany(PizzaOrdersModel, { through: UserOrdersModel });
+PizzaOrdersModel.belongsToMany(PizzasModel, { through: UserOrdersModel }); */
+
+/* UserOrdersModel.belongsToMany(PizzaOrdersModel, { through: PizzasModel });  */
+
+PizzasModel.belongsToMany(UserOrdersModel, {
+  through: PizzaOrdersModel,
+});
+UserOrdersModel.belongsToMany(PizzasModel, {
+  through: PizzaOrdersModel,
+  foreignKey: "orderID",
+});
+
+UsersModel.hasMany(UserOrdersModel);
+UserOrdersModel.belongsTo(UsersModel);
+
 module.exports = {
   PizzasModel,
   TypesModel,
   SizesModel,
   CategoryModel,
+  PizzaOrdersModel,
+  UserOrdersModel,
+  UsersModel,
 };
