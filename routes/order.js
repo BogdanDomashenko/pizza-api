@@ -2,7 +2,7 @@ const express = require("express");
 const { checkoutOrder, getOrder } = require("../controllers/orderController");
 const router = express.Router();
 
-router.get("/", getOrder);
-router.get("/checkout", checkoutOrder);
+router.post("/", getOrder);
+router.post("/checkout", checkoutOrder);
 
 module.exports = router;
