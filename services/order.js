@@ -4,13 +4,8 @@ exports.getOrder = async (id) => {
   const Order = await UserOrdersModel.findOne({
     where: { id },
     include: [{ model: PizzasModel }],
+    attributes: ["id", "createdAt"],
   });
 
   return Order;
-
-  return Order.pizzas.map(({ id, pizzaOrders }) => ({
-    pizzaId: id,
-    count: pizzaOrders.count,
-    props: pizzaOrders.props,
-  }));
 };

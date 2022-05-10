@@ -42,8 +42,9 @@ const PizzaOrdersModel = sequelize.define("pizzaOrders", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   orderID: { type: DataTypes.INTEGER },
   pizzaID: { type: DataTypes.INTEGER },
-  count: { type: DataTypes.INTEGER },
   props: { type: DataTypes.STRING(225) },
+  count: { type: DataTypes.INTEGER },
+  totalPrice: { type: DataTypes.INTEGER },
 });
 
 const UserOrdersModel = sequelize.define(
@@ -51,6 +52,7 @@ const UserOrdersModel = sequelize.define(
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     userID: { type: DataTypes.INTEGER },
+    status: { type: DataTypes.STRING(255), defaultValue: "processing" },
   },
   { timestamps: true }
 );

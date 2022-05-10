@@ -9,11 +9,15 @@ const { getOrder } = require("../services/order");
 
 exports.getOrder = async (req, res, next) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
 
     const order = await getOrder(id);
 
-    res.json(order);
+    if (!order) {
+      next(ApiError.badRequest("This order is does not exists"));
+    }
+
+    return res.json(order);
   } catch (err) {
     next(err);
   }
@@ -36,13 +40,12 @@ exports.checkoutOrder = async (req, res, next) => {
     }
 
     const UserOrder = await UserOrdersModel.create({ userID: User.id });
-
     orderList.forEach(async (order) => {
-      await PizzasModel.findOne({ id: order.id });
+      const Pizza = await PizzasModel.findOne({ id: order.id });
       await PizzaOrdersModel.create({
         orderID: UserOrder.id,
         ...order,
-        totalPrice: order.count * PizzasModel.price,
+        totalPrice: order.count * Pizza.price,
       });
     });
 
