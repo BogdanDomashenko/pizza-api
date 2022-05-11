@@ -11,6 +11,7 @@ const pizzasRouter = require("./routes/pizzas");
 const stockRouter = require("./routes/stock");
 const categoryRouter = require("./routes/category");
 const orderRouter = require("./routes/order");
+const authRouter = require("./routes/auth");
 const errorHandler = require("./middleware/ErrorHandlingMiddleware");
 
 const app = express();
@@ -34,6 +35,7 @@ app.use("/pizzas", pizzasRouter);
 app.use("/stock", stockRouter);
 app.use("/category", categoryRouter);
 app.use("/order", orderRouter);
+app.use("/auth", authRouter);
 
 app.use(errorHandler);
 
