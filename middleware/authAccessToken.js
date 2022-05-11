@@ -4,7 +4,6 @@ const ApiError = require("../error/ApiError");
 function authAccessToken(req, res, next) {
   try {
     const { authorization } = req.headers;
-
     if (authorization) {
       jwt.verify(
         authorization,

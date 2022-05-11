@@ -1,4 +1,11 @@
-exports.access = (req, res, next) => {
+const jwt = require("jsonwebtoken");
+const ApiError = require("../error/ApiError");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../utils/helpers/token");
+
+exports.accessToken = (req, res, next) => {
   try {
     const { authorization } = req.headers;
 
@@ -7,19 +14,21 @@ exports.access = (req, res, next) => {
         authorization,
         process.env.ACCESS_TOKEN_SECRET,
         (err, user) => {
-          if (err) return next("Access token not valid");
+          if (err) {
+            return next(ApiError.badRequest("Access token not valid"));
+          }
           return res.send(req.session.refreshToken);
         }
       );
     } else {
-      next("token does not exist");
+      next(ApiError.badRequest("token does not exist"));
     }
   } catch (e) {
-    next("Access token error");
+    next(ApiError.badRequest("Access token error"));
   }
 };
 
-exports.refresh = (req, res, next) => {
+exports.refreshToken = (req, res, next) => {
   try {
     if (req.cookies.refreshToken) {
       jwt.verify(
@@ -31,8 +40,8 @@ exports.refresh = (req, res, next) => {
           const { email, password } = user;
           const data = { email, password };
 
-          const accessToken = tokenUtil.generateAccessToken(data);
-          const refreshToken = tokenUtil.generateRefreshToken(data);
+          const accessToken = generateAccessToken(data);
+          const refreshToken = generateRefreshToken(data);
 
           res.cookie("refreshToken", refreshToken, {
             maxAge: 24 * 60 * 60 * 1000,
@@ -43,9 +52,9 @@ exports.refresh = (req, res, next) => {
         }
       );
     } else {
-      next("token does not exist");
+      next(ApiError.badRequest("token does not exist"));
     }
   } catch (e) {
-    next("Token refresh error");
+    next(ApiError.badRequest("Token refresh error"));
   }
 };

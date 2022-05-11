@@ -12,7 +12,10 @@ const stockRouter = require("./routes/stock");
 const categoryRouter = require("./routes/category");
 const orderRouter = require("./routes/order");
 const authRouter = require("./routes/auth");
-const errorHandler = require("./middleware/ErrorHandlingMiddleware");
+const tokenRouter = require("./routes/token");
+const ordersRouter = require("./routes/orders");
+
+const errorHandler = require("./middleware/ErrorHandling");
 
 const app = express();
 
@@ -36,6 +39,8 @@ app.use("/stock", stockRouter);
 app.use("/category", categoryRouter);
 app.use("/order", orderRouter);
 app.use("/auth", authRouter);
+app.use("/token", tokenRouter);
+app.use("/orders", ordersRouter);
 
 app.use(errorHandler);
 

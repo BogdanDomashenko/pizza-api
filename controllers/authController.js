@@ -2,6 +2,10 @@ const bcrypt = require("bcrypt");
 
 const ApiError = require("../error/ApiError");
 const { UsersModel } = require("../models/models");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../utils/helpers/token");
 
 exports.signIn = async (req, res, next) => {
   try {
@@ -19,7 +23,32 @@ exports.signIn = async (req, res, next) => {
       return next(ApiError.badRequest("Incorrect password"));
     }
 
-    res.json({ id: User.id, phoneNumber: User.phoneNumber, role: User.role });
+    const data = {
+      id: User.id,
+      phoneNumber: User.phoneNumber,
+      role: User.role,
+    };
+
+    const accessToken = generateAccessToken(data);
+    const refreshToken = generateRefreshToken(data);
+
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+
+    res.set("Authorization", accessToken);
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.test = (req, res, next) => {
+  try {
+    const { phoneNumber } = res.locals;
+
+    res.json({ phoneNumber });
   } catch (error) {
     next(error);
   }
