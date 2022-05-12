@@ -30,15 +30,16 @@ exports.accessToken = (req, res, next) => {
 
 exports.refreshToken = (req, res, next) => {
   try {
+    console.log(req.cookies);
     if (req.cookies.refreshToken) {
       jwt.verify(
         req.cookies.refreshToken || " ",
         process.env.REFRESH_TOKEN_SECRET,
         (err, user) => {
-          if (err) return res.sendStatus(401);
+          if (err) next(ApiError.unauthorized());
 
-          const { email, password } = user;
-          const data = { email, password };
+          const { id, phoneNumber, role } = user;
+          const data = { id, phoneNumber, role };
 
           const accessToken = generateAccessToken(data);
           const refreshToken = generateRefreshToken(data);
@@ -52,9 +53,9 @@ exports.refreshToken = (req, res, next) => {
         }
       );
     } else {
-      next(ApiError.badRequest("token does not exist"));
+      next(ApiError.unauthorized("token does not exist"));
     }
   } catch (e) {
-    next(ApiError.badRequest("Token refresh error"));
+    next(ApiError.unauthorized("Token refresh error"));
   }
 };

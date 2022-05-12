@@ -38,18 +38,17 @@ exports.signIn = async (req, res, next) => {
     });
 
     res.set("Authorization", accessToken);
-    res.json(data);
+    res.status(200).json(data);
   } catch (error) {
     next(error);
   }
 };
 
-exports.test = (req, res, next) => {
+exports.logout = (req, res) => {
   try {
-    const { phoneNumber } = res.locals;
-
-    res.json({ phoneNumber });
-  } catch (error) {
-    next(error);
+    res.clearCookie("refreshToken");
+    res.sendStatus(200);
+  } catch (e) {
+    next(ApiError.badRequest("Logout error"));
   }
 };
