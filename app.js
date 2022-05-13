@@ -17,6 +17,7 @@ const tokenRouter = require("./routes/token");
 const ordersRouter = require("./routes/orders");
 
 const errorHandler = require("./middleware/ErrorHandling");
+const { PizzaSizesModel, PizzaTypesModel } = require("./models/models");
 
 const app = express();
 

@@ -97,4 +97,6 @@ module.exports = {
   PizzaOrdersModel,
   UserOrdersModel,
   UsersModel,
+  PizzaSizesModel,
+  PizzaTypesModel,
 };

@@ -22,7 +22,6 @@ exports.ordersList = async (req, res, next) => {
       order.pizzas.forEach((pizza) => {
         totalOrderPrice += pizza.pizzaOrders.totalPrice;
       });
-      console.log(order);
 
       return {
         ...order,

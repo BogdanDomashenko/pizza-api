@@ -11,6 +11,7 @@ function authAccessToken(req, res, next) {
         (err, user) => {
           if (err) return next(ApiError.badRequest("Access token not valid"));
           res.locals.phoneNumber = user.phoneNumber;
+          res.locals.role = user.role;
           next();
         }
       );

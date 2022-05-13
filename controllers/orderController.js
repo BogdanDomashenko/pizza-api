@@ -64,6 +64,10 @@ exports.updateOrder = async (req, res, next) => {
     if (!order) {
       next(ApiError.badRequest("'order' param cannot be empty"));
     }
+
+    await UserOrdersModel.update({ ...order }, { where: { id: order.id } });
+
+    res.sendStatus(200);
   } catch (err) {
     next(err);
   }
