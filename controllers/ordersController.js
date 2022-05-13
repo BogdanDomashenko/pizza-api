@@ -15,7 +15,22 @@ exports.ordersList = async (req, res, next) => {
       attributes: ["id", "status", "createdAt"],
     });
 
-    res.json(orders);
+    const mappedOrders = orders.map((x) => {
+      const order = x.get({ plain: true });
+
+      let totalOrderPrice = 0;
+      order.pizzas.forEach((pizza) => {
+        totalOrderPrice += pizza.pizzaOrders.totalPrice;
+      });
+      console.log(order);
+
+      return {
+        ...order,
+        totalOrderPrice,
+      };
+    });
+
+    res.json(mappedOrders);
   } catch (error) {
     next(error);
   }

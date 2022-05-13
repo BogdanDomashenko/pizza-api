@@ -40,16 +40,30 @@ exports.checkoutOrder = async (req, res, next) => {
     }
 
     const UserOrder = await UserOrdersModel.create({ userID: User.id });
+
     orderList.forEach(async (order) => {
       const Pizza = await PizzasModel.findOne({ id: order.id });
+      const totalPrice = order.count * Pizza.price;
       await PizzaOrdersModel.create({
         orderID: UserOrder.id,
         ...order,
-        totalPrice: order.count * Pizza.price,
+        totalPrice: totalPrice,
       });
     });
 
     res.json({ id: UserOrder.id });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updateOrder = async (req, res, next) => {
+  try {
+    const { order } = req.body;
+
+    if (!order) {
+      next(ApiError.badRequest("'order' param cannot be empty"));
+    }
   } catch (err) {
     next(err);
   }
