@@ -4,11 +4,11 @@ const { PizzasModel } = require("../models/models");
 exports.pizzasList = async (req, res, next) => {
   try {
     const list = await PizzasModel.findAll({});
-    const pizzasObj = {};
+    /*     const pizzasObj = {};
     list.forEach((item) => {
       pizzasObj[item.id] = item;
-    });
-    return res.json(pizzasObj);
+    }); */
+    return res.json(list);
   } catch (err) {
     return next(err);
   }

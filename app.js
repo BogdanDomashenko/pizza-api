@@ -15,6 +15,7 @@ const orderRouter = require("./routes/order");
 const authRouter = require("./routes/auth");
 const tokenRouter = require("./routes/token");
 const ordersRouter = require("./routes/orders");
+const pizzaRouter = require("./routes/pizza");
 
 const errorHandler = require("./middleware/ErrorHandling");
 const { PizzaSizesModel, PizzaTypesModel } = require("./models/models");
@@ -53,6 +54,7 @@ app.use("/order", orderRouter);
 app.use("/auth", authRouter);
 app.use("/token", tokenRouter);
 app.use("/orders", ordersRouter);
+app.use("/pizza", pizzaRouter);
 
 app.use(errorHandler);
 
