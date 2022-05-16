@@ -4,6 +4,8 @@ const {
   allStockPizzas,
   setPizzaAvailable,
   setPizzaNotAvailable,
+  setPizzaSizeAvailable,
+  setPizzaTypeAvailable,
 } = require("../controllers/stockController");
 const authAccessToken = require("../middleware/authAccessToken");
 const private = require("../middleware/private");
@@ -22,6 +24,18 @@ router.get(
   authAccessToken,
   private,
   setPizzaNotAvailable
+);
+router.post(
+  "/setPizzaSizeAvailable",
+  authAccessToken,
+  private,
+  setPizzaSizeAvailable
+);
+router.post(
+  "/setPizzaTypeAvailable",
+  authAccessToken,
+  private,
+  setPizzaTypeAvailable
 );
 
 module.exports = router;

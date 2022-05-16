@@ -117,3 +117,44 @@ exports.setPizzaNotAvailable = async (req, res, next) => {
     return next(err);
   }
 };
+
+exports.setPizzaSizeAvailable = async (req, res, next) => {
+  try {
+    const { id, sizeID, available } = req.body;
+
+    if (!id || !sizeID)
+      return next(
+        ApiError.badRequest("Request body must have 'id' and 'sizeID' param")
+      );
+
+    if (available) {
+      await PizzaSizesModel.create({ pizzaID: id, sizeID });
+    } else {
+      await PizzaSizesModel.destroy({ where: { pizzaID: id, sizeID } });
+    }
+    res.sendStatus(200);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.setPizzaTypeAvailable = async (req, res, next) => {
+  try {
+    const { id, typeID, available } = req.body;
+
+    if (!id || !typeID)
+      return next(
+        ApiError.badRequest("Request body must have 'id' and 'typeID' param")
+      );
+
+    if (available) {
+      await PizzaTypesModel.create({ pizzaID: id, typeID });
+    } else {
+      await PizzaTypesModel.destroy({ where: { pizzaID: id, typeID } });
+    }
+
+    res.sendStatus(200);
+  } catch (err) {
+    return next(err);
+  }
+};
