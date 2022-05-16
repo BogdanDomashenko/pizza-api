@@ -18,7 +18,6 @@ const ordersRouter = require("./routes/orders");
 const pizzaRouter = require("./routes/pizza");
 
 const errorHandler = require("./middleware/ErrorHandling");
-const { PizzaSizesModel, PizzaTypesModel } = require("./models/models");
 
 const app = express();
 
