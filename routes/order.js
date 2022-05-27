@@ -2,14 +2,16 @@ const express = require("express");
 const {
   checkoutOrder,
   getOrder,
-  ordersList,
   updateOrder,
+  orderList,
 } = require("../controllers/orderController");
 const authAccessToken = require("../middleware/authAccessToken");
+const private = require("../middleware/private");
 const router = express.Router();
 
-router.get("/:id", getOrder);
+router.get("/info/:id", getOrder);
 router.post("/checkout", checkoutOrder);
-router.post("/update", updateOrder);
+router.post("/update", authAccessToken, private, updateOrder);
+router.get("/list", authAccessToken, private, orderList);
 
 module.exports = router;

@@ -10,22 +10,34 @@ const {
 
 exports.aviablePizzas = async (req, res, next) => {
   try {
-    const list = await PizzasModel.findAll({
-      include: [
-        {
-          model: SizesModel,
-          attributes: ["name"],
-          through: { attributes: [] },
-          where: {},
-        },
-        {
-          model: TypesModel,
-          attributes: ["name"],
-          through: { attributes: [] },
-          where: {},
-        },
-      ],
-    });
+    const category = Number.parseInt(req.query.category);
+    const page = Number.parseInt(req.query.page);
+    const size = Number.parseInt(req.query.size);
+
+    const where = category ? { category } : null;
+
+    const { count: totalCount, rows: list } = await PizzasModel.findAndCountAll(
+      {
+        limit: size,
+        offset: size * page,
+        distinct: true,
+        include: [
+          {
+            model: SizesModel,
+            attributes: ["name"],
+            through: { attributes: [] },
+            where: {},
+          },
+          {
+            model: TypesModel,
+            attributes: ["name"],
+            through: { attributes: [] },
+            where: {},
+          },
+        ],
+        where,
+      }
+    );
 
     const parsedList = JSON.parse(JSON.stringify(list));
 
@@ -37,29 +49,38 @@ exports.aviablePizzas = async (req, res, next) => {
       };
     });
 
-    return res.json(resList);
+    return res.json({ list: resList, totalCount });
   } catch (err) {
     return next(err);
   }
 };
 
 exports.allStockPizzas = async (req, res, next) => {
+  const page = Number.parseInt(req.query.page);
+  const size = Number.parseInt(req.query.size);
+
   try {
-    const list = await PizzasModel.findAll({
-      attributes: ["id", "name"],
-      include: [
-        {
-          model: SizesModel,
-          attributes: ["name"],
-          through: { attributes: [] },
-        },
-        {
-          model: TypesModel,
-          attributes: ["name"],
-          through: { attributes: [] },
-        },
-      ],
-    });
+    const { count: totalCount, rows: list } = await PizzasModel.findAndCountAll(
+      {
+        limit: size,
+        offset: size * page,
+        attributes: ["id", "name"],
+        order: [["id", "DESC"]],
+        distinct: true,
+        include: [
+          {
+            model: SizesModel,
+            attributes: ["name"],
+            through: { attributes: [] },
+          },
+          {
+            model: TypesModel,
+            attributes: ["name"],
+            through: { attributes: [] },
+          },
+        ],
+      }
+    );
 
     const parsedList = JSON.parse(JSON.stringify(list));
 
@@ -71,7 +92,7 @@ exports.allStockPizzas = async (req, res, next) => {
       };
     });
 
-    return res.json(resList);
+    return res.json({ list: resList, totalCount });
   } catch (err) {
     return next(err);
   }

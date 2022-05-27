@@ -8,13 +8,11 @@ const session = require("express-session");
 const cors = require("cors");
 
 const indexRouter = require("./routes/index");
-const pizzasRouter = require("./routes/pizzas");
 const stockRouter = require("./routes/stock");
 const categoryRouter = require("./routes/category");
 const orderRouter = require("./routes/order");
 const authRouter = require("./routes/auth");
 const tokenRouter = require("./routes/token");
-const ordersRouter = require("./routes/orders");
 const pizzaRouter = require("./routes/pizza");
 
 const errorHandler = require("./middleware/ErrorHandling");
@@ -46,13 +44,11 @@ app.use(
 );
 
 app.use("/", indexRouter);
-app.use("/pizzas", pizzasRouter);
 app.use("/stock", stockRouter);
 app.use("/category", categoryRouter);
 app.use("/order", orderRouter);
 app.use("/auth", authRouter);
 app.use("/token", tokenRouter);
-app.use("/orders", ordersRouter);
 app.use("/pizza", pizzaRouter);
 
 app.use(errorHandler);

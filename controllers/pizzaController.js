@@ -63,3 +63,21 @@ exports.deletePizza = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.pizzaList = async (req, res, next) => {
+  try {
+    const page = Number.parseInt(req.query.page);
+    const size = Number.parseInt(req.query.size);
+    const { count: totalCount, rows: list } = await PizzasModel.findAndCountAll(
+      {
+        limit: size,
+        offset: size * page,
+        order: [["id", "DESC"]],
+      }
+    );
+
+    return res.json({ list, totalCount });
+  } catch (err) {
+    return next(err);
+  }
+};
