@@ -10,6 +10,7 @@ function authAccessToken(req, res, next) {
         process.env.ACCESS_TOKEN_SECRET,
         (err, user) => {
           if (err) return next(ApiError.badRequest("Access token not valid"));
+          res.locals.id = user.id;
           res.locals.phoneNumber = user.phoneNumber;
           res.locals.role = user.role;
           next();

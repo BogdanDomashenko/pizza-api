@@ -109,3 +109,41 @@ exports.orderList = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.userOrderList = async (req, res, next) => {
+  try {
+    const id = res.locals.id;
+    const page = Number.parseInt(req.query.page);
+    const size = Number.parseInt(req.query.size);
+    const { count: totalCount, rows: orders } =
+      await UserOrdersModel.findAndCountAll({
+        limit: size,
+        offset: size * page,
+        order: [["createdAt", "DESC"]],
+        distinct: true,
+        include: [
+          { model: PizzasModel },
+          { model: UsersModel, attributes: ["id", "phoneNumber", "role"], where: { id } },
+        ],
+        attributes: ["id", "status", "createdAt"],
+      });
+
+    const mappedOrders = orders.map((x) => {
+      const order = x.get({ plain: true });
+
+      let totalOrderPrice = 0;
+      order.pizzas.forEach((pizza) => {
+        totalOrderPrice += pizza.pizzaOrders.totalPrice;
+      });
+
+      return {
+        ...order,
+        totalOrderPrice,
+      };
+    });
+
+    res.json({ list: mappedOrders, totalCount });
+  } catch (error) {
+    next(error);
+  }
+};

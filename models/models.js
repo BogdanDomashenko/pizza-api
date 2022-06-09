@@ -89,6 +89,9 @@ UserOrdersModel.belongsToMany(PizzasModel, {
 UsersModel.hasMany(UserOrdersModel);
 UserOrdersModel.belongsTo(UsersModel);
 
+PizzasModel.hasMany(PizzaOrdersModel);
+PizzaOrdersModel.belongsTo(PizzasModel);
+
 module.exports = {
   PizzasModel,
   TypesModel,

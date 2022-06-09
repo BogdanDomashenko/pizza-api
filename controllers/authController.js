@@ -1,11 +1,37 @@
 const bcrypt = require("bcrypt");
 
 const ApiError = require("../error/ApiError");
-const { UsersModel } = require("../models/models");
+const { UsersModel, UserOrdersModel } = require("../models/models");
 const {
   generateAccessToken,
   generateRefreshToken,
 } = require("../utils/helpers/token");
+
+exports.signUp = async (req, res, next) => {
+  try {
+    const { phoneNumber, password } = req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 3);
+
+    const User = await UsersModel.findOne({ where: { phoneNumber } });
+    const isSignUpped = !!(User && User.password?.length);
+
+    if(isSignUpped) {
+      return next(ApiError.badRequest("This user is already registered"));
+    }
+
+    if(User && !isSignUpped) {
+      const newUser = await User.update({ password: hashedPassword });
+
+      return res.json({ id: newUser.id, phoneNumber: newUser.phoneNumber, role: newUser.role });
+    }
+  
+    const newUser = await UsersModel.create({ phoneNumber, password: hashedPassword });
+    return res.json({ id: newUser.id, phoneNumber: newUser.phoneNumber, role: newUser.role });
+  } catch(error) {
+    next(error);
+  }
+}
 
 exports.signIn = async (req, res, next) => {
   try {
