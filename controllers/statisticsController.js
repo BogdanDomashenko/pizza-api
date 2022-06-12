@@ -1,4 +1,5 @@
 const { Sequelize } = require("../db");
+const ApiError = require("../error/ApiError");
 const {
 	PizzaOrdersModel,
 	PizzasModel,
@@ -23,22 +24,34 @@ exports.pizzaPopularity = async (req, res, next) => {
 	}
 };
 
-exports.salesByMonth = async (req, res, next) => {
+exports.salesBy = async (req, res, next) => {
 	try {
+		const by = req.query.by;
+		const num = Number.parseInt(req.query.num);
+
 		const pizzas = await PizzasModel.findAll({
 			include: [
 				{
 					model: UserOrdersModel,
 					attributes: ["createdAt"],
 					where: Sequelize.where(
-						Sequelize.fn("MONTH", Sequelize.col("createdAt")),
-						5
+						Sequelize.fn(by, Sequelize.col("createdAt")),
+						num
 					),
+				},
+				{
+					model: PizzaOrdersModel,
 				},
 			],
 		});
 
-		res.send(pizzas);
+		const mappedPizzas = pizzas.map((pizza) => ({
+			id: pizza.id,
+			name: pizza.name,
+			sales: pizza.pizzaOrders.length,
+		}));
+
+		res.send(mappedPizzas);
 	} catch (error) {
 		next(error);
 	}
