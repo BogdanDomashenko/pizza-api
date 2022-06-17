@@ -3,78 +3,89 @@ const bcrypt = require("bcrypt");
 const ApiError = require("../error/ApiError");
 const { UsersModel, UserOrdersModel } = require("../models/models");
 const {
-  generateAccessToken,
-  generateRefreshToken,
+	generateAccessToken,
+	generateRefreshToken,
 } = require("../utils/helpers/token");
 
 exports.signUp = async (req, res, next) => {
-  try {
-    const { phoneNumber, password } = req.body;
+	try {
+		const { phoneNumber, password } = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, 3);
+		const hashedPassword = await bcrypt.hash(password, 3);
 
-    const User = await UsersModel.findOne({ where: { phoneNumber } });
-    const isSignUpped = !!(User && User.password?.length);
+		const User = await UsersModel.findOne({ where: { phoneNumber } });
+		const isSignUpped = !!(User && User.password?.length);
 
-    if(isSignUpped) {
-      return next(ApiError.badRequest("This user is already registered"));
-    }
+		if (isSignUpped) {
+			return next(ApiError.badRequest("This user is already registered"));
+		}
 
-    if(User && !isSignUpped) {
-      const newUser = await User.update({ password: hashedPassword });
+		if (User && !isSignUpped) {
+			const newUser = await User.update({ password: hashedPassword });
 
-      return res.json({ id: newUser.id, phoneNumber: newUser.phoneNumber, role: newUser.role });
-    }
-  
-    const newUser = await UsersModel.create({ phoneNumber, password: hashedPassword });
-    return res.json({ id: newUser.id, phoneNumber: newUser.phoneNumber, role: newUser.role });
-  } catch(error) {
-    next(error);
-  }
-}
+			return res.json({
+				id: newUser.id,
+				phoneNumber: newUser.phoneNumber,
+				role: newUser.role,
+			});
+		}
+
+		const newUser = await UsersModel.create({
+			phoneNumber,
+			password: hashedPassword,
+		});
+		return res.json({
+			id: newUser.id,
+			phoneNumber: newUser.phoneNumber,
+			role: newUser.role,
+		});
+	} catch (error) {
+		next(error);
+	}
+};
 
 exports.signIn = async (req, res, next) => {
-  try {
-    const { phoneNumber, password } = req.body;
+	try {
+		const { phoneNumber, password } = req.body;
 
-    const User = await UsersModel.findOne({ where: { phoneNumber } });
+		const User = await UsersModel.findOne({ where: { phoneNumber } });
 
-    if (!User) {
-      return next(ApiError.badRequest("This user does not exists"));
-    }
+		if (!User) {
+			return next(ApiError.badRequest("This user does not exists"));
+		}
 
-    const isPassEquals = await bcrypt.compare(password, User.password);
+		const isPassEquals = await bcrypt.compare(password, User.password);
 
-    if (!isPassEquals) {
-      return next(ApiError.badRequest("Incorrect password"));
-    }
+		if (!isPassEquals) {
+			return next(ApiError.badRequest("Incorrect password"));
+		}
 
-    const data = {
-      id: User.id,
-      phoneNumber: User.phoneNumber,
-      role: User.role,
-    };
+		const data = {
+			id: User.id,
+			phoneNumber: User.phoneNumber,
+			role: User.role,
+		};
 
-    const accessToken = generateAccessToken(data);
-    const refreshToken = generateRefreshToken(data);
+		const accessToken = generateAccessToken(data);
+		const refreshToken = generateRefreshToken(data);
 
-    res.cookie("refreshToken", refreshToken, {
-      maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
+		res.cookie("refreshToken", refreshToken, {
+			maxAge: 24 * 60 * 60 * 1000,
+			httpOnly: true,
+		});
 
-    res.set("Authorization", accessToken);
-    res.status(200).json(data);
-  } catch (error) {
-    next(error);
-  }
+		res.set("Authorization", accessToken);
+		res.status(200).json(data);
+	} catch (error) {
+		next(error);
+	}
 };
 
 exports.logout = (req, res) => {
-  try {
-    res.clearCookie("refreshToken");
-    res.sendStatus(200);
-  } catch (e) {
-    next(ApiError.badRequest("Logout error"));
-  }
+	try {
+		res.clearCookie("refreshToken");
+		res.sendStatus(200);
+	} catch (e) {
+		next(ApiError.badRequest("Logout error"));
+	}
 };

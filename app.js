@@ -15,18 +15,19 @@ const authRouter = require("./routes/auth");
 const tokenRouter = require("./routes/token");
 const pizzaRouter = require("./routes/pizza");
 const statisticsRouter = require("./routes/statistics");
+const userRouter = require("./routes/user");
 
 const errorHandler = require("./middleware/ErrorHandling");
 
 const app = express();
 
 app.use(
-  cors({
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization", "Access"],
-    exposedHeaders: ["Authorization", "Access"],
-    origin: ["http://localhost:3000", "https://mypizza.surge.sh"],
-  })
+	cors({
+		credentials: true,
+		allowedHeaders: ["Content-Type", "Authorization", "Access"],
+		exposedHeaders: ["Authorization", "Access"],
+		origin: ["http://localhost:3000", "https://mypizza.surge.sh"],
+	})
 );
 
 app.use(logger("dev"));
@@ -36,12 +37,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { path: "/", secure: false, httpOnly: true, maxAge: 30000 },
-  })
+	session({
+		secret: process.env.SESSION_SECRET,
+		resave: false,
+		saveUninitialized: true,
+		cookie: { path: "/", secure: false, httpOnly: true, maxAge: 30000 },
+	})
 );
 
 app.use("/", indexRouter);
@@ -52,16 +53,17 @@ app.use("/auth", authRouter);
 app.use("/token", tokenRouter);
 app.use("/pizza", pizzaRouter);
 app.use("/statistics", statisticsRouter);
+app.use("/user", userRouter);
 
 app.use(errorHandler);
 
 const start = async () => {
-  try {
-    await sequelize.authenticate();
-    await sequelize.sync();
-  } catch (e) {
-    console.log(e);
-  }
+	try {
+		await sequelize.authenticate();
+		await sequelize.sync();
+	} catch (e) {
+		console.log(e);
+	}
 };
 
 start();
