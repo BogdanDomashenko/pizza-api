@@ -6,6 +6,7 @@ const {
 	PizzasModel,
 } = require("../models/models");
 const { getOrder } = require("../services/order");
+const { ROLES } = require("../utils/constants/userRolesConsts");
 
 exports.getOrder = async (req, res, next) => {
 	try {
@@ -32,6 +33,7 @@ exports.checkoutOrder = async (req, res, next) => {
 		if (!User) {
 			User = await UsersModel.create({
 				phoneNumber: number,
+				role: ROLES.phantom,
 			});
 		}
 
