@@ -43,7 +43,7 @@ exports.checkoutOrder = async (req, res, next) => {
 
 		const UserOrder = await UserOrdersModel.create({ userID: User.id });
 
-		orderList.forEach(async (order) => {
+		for (let order of orderList) {
 			const Pizza = await PizzasModel.findOne({ where: { id: order.pizzaID } });
 			const totalPrice = order.count * Pizza.price;
 			await PizzaOrdersModel.create({
@@ -51,7 +51,7 @@ exports.checkoutOrder = async (req, res, next) => {
 				...order,
 				totalPrice: totalPrice,
 			});
-		});
+		}
 
 		res.json({ id: UserOrder.id });
 	} catch (err) {

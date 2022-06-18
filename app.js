@@ -26,7 +26,11 @@ app.use(
 		credentials: true,
 		allowedHeaders: ["Content-Type", "Authorization", "Access"],
 		exposedHeaders: ["Authorization", "Access"],
-		origin: ["http://localhost:3000", "https://mypizza.surge.sh"],
+		origin: [
+			"http://localhost:3000",
+			"https://mypizza.surge.sh",
+			"https://serene-hollows-24324.herokuapp.com",
+		],
 	})
 );
 
