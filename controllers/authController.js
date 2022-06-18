@@ -34,11 +34,23 @@ exports.signUp = async (req, res, next) => {
 			phoneNumber,
 			password: hashedPassword,
 		});
-		return res.json({
+
+		const data = {
 			id: newUser.id,
 			phoneNumber: newUser.phoneNumber,
 			role: newUser.role,
+		};
+
+		const accessToken = generateAccessToken(data);
+		const refreshToken = generateRefreshToken(data);
+
+		res.cookie("refreshToken", refreshToken, {
+			maxAge: 24 * 60 * 60 * 1000,
+			httpOnly: true,
 		});
+
+		res.set("Authorization", accessToken);
+		res.status(200).json(data);
 	} catch (error) {
 		next(error);
 	}
