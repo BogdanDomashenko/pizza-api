@@ -26,16 +26,50 @@ exports.getOrder = async (req, res, next) => {
 
 exports.checkoutOrder = async (req, res, next) => {
 	try {
+		const { orderList } = req.body;
+
+		const { id: userID } = res.locals;
+
+		if (!orderList || !orderList.length) {
+			return next(ApiError.badRequest("'orderList' param cannot be empty"));
+		}
+
+		const UserOrder = await UserOrdersModel.create({ userID });
+
+		for (let order of orderList) {
+			const Pizza = await PizzasModel.findOne({ where: { id: order.pizzaID } });
+			const totalPrice = order.count * Pizza.price;
+			await PizzaOrdersModel.create({
+				orderID: UserOrder.id,
+				...order,
+				totalPrice: totalPrice,
+			});
+		}
+
+		res.json({ id: UserOrder.id });
+	} catch (err) {
+		next(err);
+	}
+};
+
+exports.phantomCheckoutOrder = async (req, res, next) => {
+	try {
 		const { orderList, number } = req.body;
 
 		let User = await UsersModel.findOne({ where: { phoneNumber: number } });
 
-		if (!User) {
-			User = await UsersModel.create({
-				phoneNumber: number,
-				role: ROLES.phantom,
-			});
+		if (User) {
+			return next(
+				ApiError.badRequest(
+					"User with this phone number already exists, please sign in"
+				)
+			);
 		}
+
+		User = await UsersModel.create({
+			phoneNumber: number,
+			role: ROLES.phantom,
+		});
 
 		if (!orderList || !orderList.length) {
 			return next(ApiError.badRequest("'orderList' param cannot be empty"));

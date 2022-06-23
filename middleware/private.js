@@ -4,7 +4,6 @@ const { ROLES } = require("../utils/constants/userRolesConsts");
 
 function private(req, res, next) {
 	try {
-		console.log("ROLE: ", res.locals.role);
 		if (res.locals.role !== ROLES.admin) return next(ApiError.forbidden());
 
 		next();
