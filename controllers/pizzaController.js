@@ -4,9 +4,9 @@ const {
 	SizesModel,
 	TypesModel,
 	PizzaSizesModel,
-	PizzaTypesModel,
+	PizzaTypesModel, SizePricesModel, TypePricesModel,
 } = require("../models/models");
-
+const { PizzaService } = require("../services/PizzaService");
 exports.pizzaUpdate = async (req, res, next) => {
 	try {
 		const { pizza } = req.body;
@@ -20,9 +20,9 @@ exports.pizzaUpdate = async (req, res, next) => {
 
 exports.pizzaSizes = async (req, res, next) => {
 	try {
-		const list = await SizesModel.findAll({});
+		const sizes = await PizzaService.getPizzaSizes();
 
-		return res.json(list);
+		return res.json(sizes);
 	} catch (err) {
 		next(err);
 	}
@@ -30,7 +30,7 @@ exports.pizzaSizes = async (req, res, next) => {
 
 exports.pizzaTypes = async (req, res, next) => {
 	try {
-		const types = await TypesModel.findAll({});
+		const types = await PizzaService.getPizzaTypes();
 
 		return res.json(types);
 	} catch (err) {

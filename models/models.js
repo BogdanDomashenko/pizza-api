@@ -64,6 +64,18 @@ const UsersModel = sequelize.define("users", {
   role: { type: DataTypes.STRING(45), defaultValue: ROLES.user },
 });
 
+const SizePricesModel = sequelize.define("sizePrices", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  sizeID: { type: DataTypes.INTEGER },
+  price: { type: DataTypes.INTEGER },
+})
+
+const TypePricesModel = sequelize.define("typePrices", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  typeID: { type: DataTypes.INTEGER },
+  price: { type: DataTypes.INTEGER },
+})
+
 /* PizzasModel.hasOne(CategoryModel);
 CategoryModel.belongsTo(PizzasModel); */
 
@@ -92,6 +104,12 @@ UserOrdersModel.belongsTo(UsersModel);
 PizzasModel.hasMany(PizzaOrdersModel);
 PizzaOrdersModel.belongsTo(PizzasModel);
 
+TypesModel.hasMany(TypePricesModel);
+TypePricesModel.belongsTo(TypesModel);
+
+SizesModel.hasMany(SizePricesModel);
+SizePricesModel.belongsTo(SizesModel);
+
 module.exports = {
   PizzasModel,
   TypesModel,
@@ -102,4 +120,6 @@ module.exports = {
   UsersModel,
   PizzaSizesModel,
   PizzaTypesModel,
+  SizePricesModel,
+  TypePricesModel
 };

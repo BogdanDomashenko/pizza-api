@@ -7,6 +7,7 @@ const {
   PizzaSizesModel,
   PizzaTypesModel,
 } = require("../models/models");
+const { PizzaService } = require("../services/PizzaService");
 
 exports.aviablePizzas = async (req, res, next) => {
   try {
@@ -49,7 +50,10 @@ exports.aviablePizzas = async (req, res, next) => {
       };
     });
 
-    return res.json({ list: resList, totalCount });
+    const sizes = await PizzaService.getPizzaSizes();
+    const types = await PizzaService.getPizzaTypes();
+
+    return res.json({ list: resList, totalCount, sizes, types });
   } catch (err) {
     return next(err);
   }

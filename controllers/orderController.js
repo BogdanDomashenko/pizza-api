@@ -5,7 +5,7 @@ const {
 	UserOrdersModel,
 	PizzasModel,
 } = require("../models/models");
-const { getOrder } = require("../services/order");
+const { getOrder } = require("../services/OrderService");
 const { ROLES } = require("../utils/constants/userRolesConsts");
 
 exports.getOrder = async (req, res, next) => {
