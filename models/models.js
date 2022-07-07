@@ -104,10 +104,10 @@ UserOrdersModel.belongsTo(UsersModel);
 PizzasModel.hasMany(PizzaOrdersModel);
 PizzaOrdersModel.belongsTo(PizzasModel);
 
-TypesModel.hasMany(TypePricesModel);
+TypesModel.hasOne(TypePricesModel);
 TypePricesModel.belongsTo(TypesModel);
 
-SizesModel.hasMany(SizePricesModel);
+SizesModel.hasOne(SizePricesModel);
 SizePricesModel.belongsTo(SizesModel);
 
 module.exports = {

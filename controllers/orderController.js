@@ -7,6 +7,7 @@ const {
 } = require("../models/models");
 const { getOrder } = require("../services/OrderService");
 const { ROLES } = require("../utils/constants/userRolesConsts");
+const { PizzaService } = require("../services/PizzaService");
 
 exports.getOrder = async (req, res, next) => {
 	try {
@@ -37,12 +38,13 @@ exports.checkoutOrder = async (req, res, next) => {
 		const UserOrder = await UserOrdersModel.create({ userID });
 
 		for (let order of orderList) {
+			const additionalPrice = await PizzaService.getAdditionalPriceByProps(order.props);
 			const Pizza = await PizzasModel.findOne({ where: { id: order.pizzaID } });
 			const totalPrice = order.count * Pizza.price;
 			await PizzaOrdersModel.create({
 				orderID: UserOrder.id,
 				...order,
-				totalPrice: totalPrice,
+				totalPrice: totalPrice + additionalPrice,
 			});
 		}
 
