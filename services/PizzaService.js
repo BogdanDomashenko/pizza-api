@@ -1,7 +1,7 @@
 const {
 	SizesModel,
 	TypesModel,
-	SizePricesModel, TypePricesModel,
+	SizePricesModel, TypePricesModel, UserOrdersModel, PizzasModel, PizzaOrdersModel,
 } = require("../models/models");
 const { parseOrderProps } = require("../utils/helpers/order");
 
@@ -29,7 +29,22 @@ exports.PizzaService = {
 
 		const type = await TypesModel.findOne({ where: { name: parsedProps.type }, attributes: [], include: { model: TypePricesModel, attributes: ["price"] } });
 		const size = await SizesModel.findOne({ where: { name: parsedProps.size }, attributes: [], include: { model: SizePricesModel, attributes: ["price"] } });
-
 		return (type.typePrice.price + size.sizePrice.price);
+	},
+	async createOrder(userID, orderList) {
+		const UserOrder = await UserOrdersModel.create({ userID });
+
+		for (let order of orderList) {
+			const additionalPrice = await this.getAdditionalPriceByProps(order.props);
+			const Pizza = await PizzasModel.findOne({ where: { id: order.pizzaID } });
+			const totalPrice = order.count * (Pizza.price + additionalPrice);
+			await PizzaOrdersModel.create({
+				orderID: UserOrder.id,
+				...order,
+				totalPrice,
+			});
+		}
+
+		return UserOrder;
 	}
 }

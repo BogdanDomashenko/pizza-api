@@ -35,18 +35,7 @@ exports.checkoutOrder = async (req, res, next) => {
 			return next(ApiError.badRequest("'orderList' param cannot be empty"));
 		}
 
-		const UserOrder = await UserOrdersModel.create({ userID });
-
-		for (let order of orderList) {
-			const additionalPrice = await PizzaService.getAdditionalPriceByProps(order.props);
-			const Pizza = await PizzasModel.findOne({ where: { id: order.pizzaID } });
-			const totalPrice = order.count * Pizza.price;
-			await PizzaOrdersModel.create({
-				orderID: UserOrder.id,
-				...order,
-				totalPrice: totalPrice + additionalPrice,
-			});
-		}
+		const UserOrder = await PizzaService.createOrder(userID, orderList);
 
 		res.json({ id: UserOrder.id });
 	} catch (err) {
@@ -77,17 +66,7 @@ exports.phantomCheckoutOrder = async (req, res, next) => {
 			return next(ApiError.badRequest("'orderList' param cannot be empty"));
 		}
 
-		const UserOrder = await UserOrdersModel.create({ userID: User.id });
-
-		for (let order of orderList) {
-			const Pizza = await PizzasModel.findOne({ where: { id: order.pizzaID } });
-			const totalPrice = order.count * Pizza.price;
-			await PizzaOrdersModel.create({
-				orderID: UserOrder.id,
-				...order,
-				totalPrice: totalPrice,
-			});
-		}
+		const UserOrder = await PizzaService.createOrder(User.id, orderList);
 
 		res.json({ id: UserOrder.id });
 	} catch (err) {
@@ -172,7 +151,6 @@ exports.userOrderList = async (req, res, next) => {
 
 		const mappedOrders = orders.map((x) => {
 			const order = x.get({ plain: true });
-
 			let totalOrderPrice = 0;
 			order.pizzas.forEach((pizza) => {
 				totalOrderPrice += pizza.pizzaOrders.totalPrice;
