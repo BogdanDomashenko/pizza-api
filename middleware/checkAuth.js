@@ -1,6 +1,8 @@
+const jwt = require("jsonwebtoken");
 const ApiError = require("../error/ApiError");
+const { UsersModel } = require("../models/models");
 
-const authAccessToken = (req, res, next) => {
+const checkAuth = (req, res, next) => {
 	try {
 		const { authorization } = req.headers;
 		if (authorization) {
@@ -18,11 +20,11 @@ const authAccessToken = (req, res, next) => {
 				}
 			);
 		} else {
-			return next(ApiError.badRequest("Token does not exist"));
+			return next();
 		}
 	} catch (error) {
 		next(ApiError.badRequest("Access token error"));
 	}
 };
 
-module.exports = authAccessToken;
+module.exports = checkAuth;

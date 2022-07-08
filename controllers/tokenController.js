@@ -31,13 +31,13 @@ exports.accessToken = (req, res, next) => {
 
 exports.refreshToken = (req, res, next) => {
 	try {
-		console.log(req.cookies);
+		console.log(req.cookies.refreshToken);
 		if (req.cookies.refreshToken) {
 			jwt.verify(
 				req.cookies.refreshToken || " ",
 				process.env.REFRESH_TOKEN_SECRET,
 				async (err, user) => {
-					if (err) next(ApiError.unauthorized());
+					if (err) return  next(ApiError.unauthorized());
 
 					const { id, phoneNumber, role } = await UsersModel.findOne({
 						where: { id: user.id },
