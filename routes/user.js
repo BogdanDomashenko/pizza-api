@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { userList, setUserRole } = require("../controllers/userController");
-const authAccessToken = require("../middleware/authAccessToken");
-const private = require("../middleware/private");
+const { userList, setUserRole, userData } = require("../controllers/userController");
+const verifyRoles = require("../middleware/verifyRoles");
+const autorized = require("../middleware/autorized");
+const { ROLES } = require("../utils/constants/userRolesConsts");
 
-router.get("/list", authAccessToken, private, userList);
-router.post("/set-role", authAccessToken, private, setUserRole);
+router.get("/list", verifyRoles(ROLES.admin), userList);
+router.post("/set-role", verifyRoles(ROLES.admin), setUserRole);
+router.get("/data", autorized, userData);
 
 module.exports = router;

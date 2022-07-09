@@ -35,3 +35,18 @@ exports.setUserRole = async (req, res, next) => {
 		next(err);
 	}
 };
+
+exports.userData = async (req, res, next) => {
+	try {
+		const { id } = res.locals;
+		const user = await UsersModel.findOne({ where: { id }});
+
+		return res.json({
+			id: user.id,
+			phoneNumber: user.phoneNumber,
+			role: user.role,
+		});
+	} catch (err) {
+		next(err);
+	}
+}

@@ -18,6 +18,8 @@ const statisticsRouter = require("./routes/statistics");
 const userRouter = require("./routes/user");
 
 const errorHandler = require("./middleware/ErrorHandling");
+const verifyToken = require("./middleware/verifyToken");
+const { UsersModel, PizzaOrdersModel, UserOrdersModel } = require("./models/models");
 
 const app = express();
 
@@ -48,6 +50,8 @@ app.use(
 		cookie: { path: "/", secure: false, httpOnly: true, maxAge: 30000 },
 	})
 );
+
+app.use(verifyToken);
 
 app.use("/", indexRouter);
 app.use("/stock", stockRouter);

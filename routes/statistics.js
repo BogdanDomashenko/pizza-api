@@ -3,11 +3,11 @@ const {
 	pizzaPopularity,
 	salesBy,
 } = require("../controllers/statisticsController");
-const authAccessToken = require("../middleware/authAccessToken");
-const private = require("../middleware/private");
+const verifyRoles = require("../middleware/verifyRoles");
+const { ROLES } = require("../utils/constants/userRolesConsts");
 const router = express.Router();
 
-router.get("/pizzas-sales", authAccessToken, private, pizzaPopularity);
-router.get("/sales-by", authAccessToken, private, salesBy);
+router.get("/pizzas-sales", verifyRoles(ROLES.admin), pizzaPopularity);
+router.get("/sales-by", verifyRoles(ROLES.admin), salesBy);
 
 module.exports = router;

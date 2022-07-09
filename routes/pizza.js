@@ -7,15 +7,15 @@ const {
   deletePizza,
   pizzaList,
 } = require("../controllers/pizzaController");
-const authAccessToken = require("../middleware/authAccessToken");
-const private = require("../middleware/private");
+const verifyRoles = require("../middleware/verifyRoles");
+const { ROLES } = require("../utils/constants/userRolesConsts");
 const router = express.Router();
 
-router.post("/update", authAccessToken, private, pizzaUpdate);
+router.post("/update", verifyRoles(ROLES.admin), pizzaUpdate);
 router.get("/sizes", pizzaSizes);
 router.get("/types", pizzaTypes);
-router.post("/add", authAccessToken, private, addPizza);
-router.get("/delete/:id", authAccessToken, private, deletePizza);
+router.post("/add", verifyRoles(ROLES.admin), addPizza);
+router.get("/delete/:id", verifyRoles(ROLES.admin), deletePizza);
 router.get("/list", pizzaList);
 
 module.exports = router;

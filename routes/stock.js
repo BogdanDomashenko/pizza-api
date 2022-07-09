@@ -7,35 +7,30 @@ const {
   setPizzaSizeAvailable,
   setPizzaTypeAvailable,
 } = require("../controllers/stockController");
-const authAccessToken = require("../middleware/authAccessToken");
-const private = require("../middleware/private");
-const checkAuth = require("../middleware/checkAuth");
+const verifyRoles = require("../middleware/verifyRoles");
+const { ROLES } = require("../utils/constants/userRolesConsts");
 const router = express.Router();
 
-router.get("/aviablePizzas", checkAuth, aviablePizzas);
+router.get("/aviablePizzas", aviablePizzas);
 router.get("/allPizzas", allStockPizzas);
 router.get(
   "/setPizzaAvailable/:id",
-  authAccessToken,
-  private,
+  verifyRoles(ROLES.admin),
   setPizzaAvailable
 );
 router.get(
   "/setPizzaNotAvailable/:id",
-  authAccessToken,
-  private,
+  verifyRoles(ROLES.admin),
   setPizzaNotAvailable
 );
 router.post(
   "/setPizzaSizeAvailable",
-  authAccessToken,
-  private,
+  verifyRoles(ROLES.admin),
   setPizzaSizeAvailable
 );
 router.post(
   "/setPizzaTypeAvailable",
-  authAccessToken,
-  private,
+  verifyRoles(ROLES.admin),
   setPizzaTypeAvailable
 );
 

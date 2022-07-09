@@ -7,15 +7,15 @@ const {
 	userOrderList,
 	phantomCheckoutOrder,
 } = require("../controllers/orderController");
-const authAccessToken = require("../middleware/authAccessToken");
-const private = require("../middleware/private");
+const verifyRoles = require("../middleware/verifyRoles");
+const { ROLES } = require("../utils/constants/userRolesConsts");
 const router = express.Router();
 
 router.get("/info/:id", getOrder);
-router.post("/checkout", authAccessToken, checkoutOrder);
+router.post("/checkout", verifyRoles(ROLES.admin), checkoutOrder);
 router.post("/phantom-checkout", phantomCheckoutOrder);
-router.post("/update", authAccessToken, private, updateOrder);
-router.get("/list", authAccessToken, private, orderList);
-router.get("/list-by-user", authAccessToken, userOrderList);
+router.post("/update", verifyRoles(ROLES.admin), updateOrder);
+router.get("/list", verifyRoles(ROLES.admin), orderList);
+router.get("/list-by-user", userOrderList);
 
 module.exports = router;
