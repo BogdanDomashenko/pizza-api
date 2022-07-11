@@ -7,10 +7,10 @@ exports.getOrder = async (id) => {
   //   attributes: ["id", "createdAt"],
   // });
 
-  const Order = await PizzaOrdersModel.findAll({
-    where: { orderID: id },
-    include: PizzasModel
-  })
+  const Order = await UserOrdersModel.findOne({
+    where: { id },
+    include: [{ model: PizzaOrdersModel, attributes: ["props", "totalPrice"], include: PizzasModel }],
+  });
 
   console.log(Order);
 
