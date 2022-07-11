@@ -51,6 +51,8 @@ app.use(
 	})
 );
 
+app.use("/token", tokenRouter);
+
 app.use(verifyToken);
 
 app.use("/", indexRouter);
@@ -58,7 +60,6 @@ app.use("/stock", stockRouter);
 app.use("/category", categoryRouter);
 app.use("/order", orderRouter);
 app.use("/auth", authRouter);
-app.use("/token", tokenRouter);
 app.use("/pizza", pizzaRouter);
 app.use("/statistics", statisticsRouter);
 app.use("/user", userRouter);
