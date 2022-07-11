@@ -4,7 +4,7 @@ const {
 	SizesModel,
 	TypesModel,
 	PizzaSizesModel,
-	PizzaTypesModel, SizePricesModel, TypePricesModel,
+	PizzaTypesModel,
 } = require("../models/models");
 const { PizzaService } = require("../services/PizzaService");
 exports.pizzaUpdate = async (req, res, next) => {

@@ -1,49 +1,48 @@
 const {
 	SizesModel,
 	TypesModel,
-	SizePricesModel, TypePricesModel, UserOrdersModel, PizzasModel, PizzaOrdersModel,
+	UserOrdersModel, PizzasModel, PizzaOrdersModel,
 } = require("../models/models");
 const { parseOrderProps } = require("../utils/helpers/order");
 
 exports.PizzaService = {
 	async getPizzaSizes() {
-		const sizes = await SizesModel.findAll({ include: { model: SizePricesModel, attributes: ["price"] } });
-		return sizes.map(({ id, name, sizePrice }) => ({ id, name, price: sizePrice && sizePrice.price }));
+		const sizes = await SizesModel.findAll();
+		return sizes;
 	},
 	async getPizzaTypes() {
-		const types = await TypesModel.findAll({ include: { model: TypePricesModel, attributes: ["price"] } });
-		return types.map(({ id, name, typePrice }) => ({ id, name, price: typePrice && typePrice.price }));
+		const types = await TypesModel.findAll();
+		return types;
 	},
 	async getPizzaSize(id) {
-		const size = await SizesModel.findAll({ where: {id}, include: { model: SizePricesModel, attributes: ["price"] }, });
+		const size = await SizesModel.findAll({ where: {id}});
 		return size;
-		//return sizes.map(({ id, name, sizePrices }) => ({ id, name, price: sizePrices && sizePrices[0].price }));
 	},
 	async getPizzaType(id) {
-		const type = await TypesModel.findAll({ where: {id}, include: { model: TypePricesModel, attributes: ["price"] } });
+		const type = await TypesModel.findAll({ where: {id}});
 		return type;
-		//return types.map(({ id, name, typePrices }) => ({ id, name, price: typePrices && typePrices[0].price }));
 	},
 	async getAdditionalPriceByProps(props) {
 		const parsedProps = parseOrderProps(props);
 
-		const type = await TypesModel.findOne({ where: { name: parsedProps.type }, attributes: [], include: { model: TypePricesModel, attributes: ["price"] } });
-		const size = await SizesModel.findOne({ where: { name: parsedProps.size }, attributes: [], include: { model: SizePricesModel, attributes: ["price"] } });
-		return (type.typePrice.price + size.sizePrice.price);
+		const type = await TypesModel.findOne({ where: { name: parsedProps.type }});
+		const size = await SizesModel.findOne({ where: { name: parsedProps.size }});
+		return (type.price + size.price);
 	},
 	async createOrder(userID, orderList) {
 		const UserOrder = await UserOrdersModel.create({ userID });
-
 		for (let order of orderList) {
 			const additionalPrice = await this.getAdditionalPriceByProps(order.props);
 			const Pizza = await PizzasModel.findOne({ where: { id: order.pizzaID } });
 			const totalPrice = order.count * (Pizza.price + additionalPrice);
-			await PizzaOrdersModel.create({
+			const newOrder = await PizzaOrdersModel.create({
 				orderID: UserOrder.id,
 				...order,
 				totalPrice,
 			});
 		}
+
+		console.log(await PizzaOrdersModel.findAll({ where: { orderID: 99 } }));
 
 		return UserOrder;
 	}

@@ -20,6 +20,7 @@ const PizzaTypesModel = sequelize.define("pizzaTypes", {
 const TypesModel = sequelize.define("types", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING(45) },
+  price: { type: DataTypes.INTEGER },
 });
 
 const PizzaSizesModel = sequelize.define("pizzaSizes", {
@@ -31,6 +32,7 @@ const PizzaSizesModel = sequelize.define("pizzaSizes", {
 const SizesModel = sequelize.define("sizes", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING(45) },
+  price: { type: DataTypes.INTEGER },
 });
 
 const CategoryModel = sequelize.define("categories", {
@@ -64,17 +66,6 @@ const UsersModel = sequelize.define("users", {
   role: { type: DataTypes.STRING(45), defaultValue: ROLES.user },
 });
 
-const SizePricesModel = sequelize.define("sizePrices", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  sizeID: { type: DataTypes.INTEGER },
-  price: { type: DataTypes.INTEGER },
-})
-
-const TypePricesModel = sequelize.define("typePrices", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  typeID: { type: DataTypes.INTEGER },
-  price: { type: DataTypes.INTEGER },
-})
 
 /* PizzasModel.hasOne(CategoryModel);
 CategoryModel.belongsTo(PizzasModel); */
@@ -85,10 +76,16 @@ TypesModel.belongsToMany(PizzasModel, { through: PizzaTypesModel });
 PizzasModel.belongsToMany(SizesModel, { through: PizzaSizesModel });
 SizesModel.belongsToMany(PizzasModel, { through: PizzaSizesModel });
 
-/* PizzasModel.belongsToMany(PizzaOrdersModel, { through: UserOrdersModel });
-PizzaOrdersModel.belongsToMany(PizzasModel, { through: UserOrdersModel }); */
+// PizzasModel.belongsToMany(PizzaOrdersModel, { through: UserOrdersModel });
+// PizzaOrdersModel.belongsToMany(PizzasModel, { through: UserOrdersModel });
+//
+// UserOrdersModel.belongsToMany(PizzaOrdersModel, { through: PizzasModel });
 
-/* UserOrdersModel.belongsToMany(PizzaOrdersModel, { through: PizzasModel });  */
+
+
+
+
+
 
 PizzasModel.belongsToMany(UserOrdersModel, {
   through: PizzaOrdersModel,
@@ -98,17 +95,15 @@ UserOrdersModel.belongsToMany(PizzasModel, {
   foreignKey: "orderID",
 });
 
+
+
+
 UsersModel.hasMany(UserOrdersModel);
 UserOrdersModel.belongsTo(UsersModel);
 
 PizzasModel.hasMany(PizzaOrdersModel);
 PizzaOrdersModel.belongsTo(PizzasModel);
 
-TypesModel.hasOne(TypePricesModel);
-TypePricesModel.belongsTo(TypesModel);
-
-SizesModel.hasOne(SizePricesModel);
-SizePricesModel.belongsTo(SizesModel);
 
 module.exports = {
   PizzasModel,
@@ -120,6 +115,4 @@ module.exports = {
   UsersModel,
   PizzaSizesModel,
   PizzaTypesModel,
-  SizePricesModel,
-  TypePricesModel
 };
