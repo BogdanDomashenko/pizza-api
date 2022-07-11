@@ -80,7 +80,7 @@ SizesModel.belongsToMany(PizzasModel, { through: PizzaSizesModel });
 // PizzaOrdersModel.belongsToMany(PizzasModel, { through: UserOrdersModel });
 //
 // UserOrdersModel.belongsToMany(PizzaOrdersModel, { through: PizzasModel });
-
+//
 
 
 PizzasModel.belongsToMany(UserOrdersModel, {
@@ -97,6 +97,9 @@ PizzaOrdersModel.belongsTo(UserOrdersModel, { foreignKey: "id" });
 
 PizzasModel.hasMany(PizzaOrdersModel, {  foreignKey: "id" });
 PizzaOrdersModel.belongsTo(PizzasModel, {  foreignKey: "pizzaID" });
+
+UsersModel.hasMany(UserOrdersModel, { foreignKey: "id" });
+UserOrdersModel.belongsTo(UsersModel, { foreignKey: "userID" });
 //new
 
 //
