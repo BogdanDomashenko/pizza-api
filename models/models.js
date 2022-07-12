@@ -103,11 +103,11 @@ UserOrdersModel.belongsTo(UsersModel, { foreignKey: "userID" });
 //new
 
 //
-// UsersModel.hasMany(UserOrdersModel);
-// UserOrdersModel.belongsTo(UsersModel);
-//
-// PizzasModel.hasMany(PizzaOrdersModel);
-// PizzaOrdersModel.belongsTo(PizzasModel);
+UsersModel.hasMany(UserOrdersModel);
+UserOrdersModel.belongsTo(UsersModel);
+
+PizzasModel.hasMany(PizzaOrdersModel);
+PizzaOrdersModel.belongsTo(PizzasModel);
 
 
 module.exports = {

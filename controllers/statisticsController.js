@@ -1,5 +1,4 @@
 const { Sequelize } = require("../db");
-const ApiError = require("../error/ApiError");
 const {
 	PizzaOrdersModel,
 	PizzasModel,

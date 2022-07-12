@@ -87,3 +87,27 @@ exports.pizzaList = async (req, res, next) => {
 		return next(err);
 	}
 };
+
+exports.updateTypePrice = async (req, res, next) => {
+	try {
+		const { id, price } = req.body;
+
+		await TypesModel.update({ price }, { where: { id} });
+
+		return res.sendStatus(200);
+	} catch (err) {
+		return next(err);
+	}
+}
+
+exports.updateSizePrice = async (req, res, next) => {
+	try {
+		const { id, price } = req.body;
+
+		await SizesModel.update({ price }, { where: { id }});
+
+		return res.sendStatus(200);
+	} catch (err) {
+		return next(err);
+	}
+}
