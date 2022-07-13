@@ -7,6 +7,7 @@ const {
 	PizzaTypesModel,
 } = require("../models/models");
 const { PizzaService } = require("../services/PizzaService");
+
 exports.pizzaUpdate = async (req, res, next) => {
 	try {
 		const { pizza } = req.body;
@@ -88,11 +89,23 @@ exports.pizzaList = async (req, res, next) => {
 	}
 };
 
-exports.updateTypePrice = async (req, res, next) => {
+exports.updateType = async (req, res, next) => {
 	try {
-		const { id, price } = req.body;
+		const { id, name, price } = req.body;
+				
+		await TypesModel.update({ id, name, price }, { where: { id } });
+		
+		return res.sendStatus(200);
+	} catch (err) {
+		return next(err);
+	}
+}
 
-		await TypesModel.update({ price }, { where: { id} });
+exports.updateSize = async (req, res, next) => {
+	try {
+		const { id, name, price } = req.body;
+
+		await SizesModel.update({ name, price }, { where: { id }});
 
 		return res.sendStatus(200);
 	} catch (err) {
@@ -100,13 +113,28 @@ exports.updateTypePrice = async (req, res, next) => {
 	}
 }
 
-exports.updateSizePrice = async (req, res, next) => {
+exports.addType = async (req, res, next) => {
 	try {
-		const { id, price } = req.body;
+		const { name, price } = req.body;
 
-		await SizesModel.update({ price }, { where: { id }});
 
-		return res.sendStatus(200);
+		const newType = await TypesModel.create({ name, price });
+
+		res.json(newType);
+	} catch (err) {
+		return next(err);
+	}
+}
+
+exports.addSize = async (req, res, next) => {
+	try {
+		const { name, price } = req.body;
+
+		console.log({name, price})
+
+		const newSize = await SizesModel.create({ name, price });
+
+		res.json(newSize);
 	} catch (err) {
 		return next(err);
 	}
