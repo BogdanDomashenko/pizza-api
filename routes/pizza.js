@@ -5,7 +5,7 @@ const {
   pizzaTypes,
   addPizza,
   deletePizza,
-  pizzaList, updateTypePrice, updateSizePrice,
+  pizzaList, updateType, updateSize, addSize, addType, deleteType, deleteSize
 } = require("../controllers/pizzaController");
 const verifyRoles = require("../middleware/verifyRoles");
 const { ROLES } = require("../utils/constants/userRolesConsts");
@@ -17,7 +17,11 @@ router.get("/types", pizzaTypes);
 router.post("/add", verifyRoles(ROLES.admin), addPizza);
 router.get("/delete/:id", verifyRoles(ROLES.admin), deletePizza);
 router.get("/list", pizzaList);
-router.post("/update-type-price", verifyRoles(ROLES.admin), updateTypePrice);
-router.post("/update-size-price", verifyRoles(ROLES.admin), updateSizePrice);
+router.post("/update-type", verifyRoles(ROLES.admin), updateType);
+router.post("/update-size", verifyRoles(ROLES.admin), updateSize);
+router.post("/add-size", verifyRoles(ROLES.admin), addSize);
+router.post("/add-type", verifyRoles(ROLES.admin), addType);
+router.post("/delete-size", verifyRoles(ROLES.admin), deleteSize);
+router.post("/delete-type", verifyRoles(ROLES.admin), deleteType);
 
 module.exports = router;

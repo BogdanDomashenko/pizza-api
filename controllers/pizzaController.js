@@ -117,7 +117,6 @@ exports.addType = async (req, res, next) => {
 	try {
 		const { name, price } = req.body;
 
-
 		const newType = await TypesModel.create({ name, price });
 
 		res.json(newType);
@@ -130,11 +129,35 @@ exports.addSize = async (req, res, next) => {
 	try {
 		const { name, price } = req.body;
 
-		console.log({name, price})
-
 		const newSize = await SizesModel.create({ name, price });
 
 		res.json(newSize);
+	} catch (err) {
+		return next(err);
+	}
+}
+
+exports.deleteSize = async (req, res, next) => {
+	try {
+		const { id } = req.body;
+
+		await PizzaSizesModel.destroy({ where: { sizeID: id } });
+		await SizesModel.destroy({ where: { id } });
+
+		res.sendStatus(200);
+	} catch (err) {
+		return next(err);
+	}
+}
+
+exports.deleteType = async (req, res, next) => {
+	try {
+		const { id } = req.body;
+
+		await PizzaTypesModel.destroy({ where: { typeID: id } });
+		await TypesModel.destroy({ where: { id } });
+
+		res.sendStatus(200);
 	} catch (err) {
 		return next(err);
 	}
