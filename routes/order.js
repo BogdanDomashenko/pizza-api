@@ -6,6 +6,7 @@ const {
 	orderList,
 	userOrderList,
 	phantomCheckoutOrder,
+	shippingOrderData,
 } = require("../controllers/orderController");
 const verifyRoles = require("../middleware/verifyRoles");
 const { ROLES } = require("../utils/constants/userRolesConsts");
@@ -18,5 +19,6 @@ router.post("/phantom-checkout", phantomCheckoutOrder);
 router.post("/update", verifyRoles(ROLES.admin), updateOrder);
 router.get("/list", verifyRoles(ROLES.admin), orderList);
 router.get("/list-by-user", autorized, userOrderList);
+router.get("/shipping-data/:id", verifyRoles(ROLES.admin), shippingOrderData);
 
 module.exports = router;

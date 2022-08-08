@@ -4,6 +4,7 @@ const {
 	PizzaOrdersModel,
 	UserOrdersModel,
 	PizzasModel,
+	OrderShippingsModel,
 } = require("../models/models");
 const { getOrder } = require("../services/OrderService");
 const { ROLES } = require("../utils/constants/userRolesConsts");
@@ -27,7 +28,7 @@ exports.getOrder = async (req, res, next) => {
 
 exports.checkoutOrder = async (req, res, next) => {
 	try {
-		const { orderList } = req.body;
+		const { orderList, shippingData } = req.body;
 
 		const { id: userID } = res.locals;
 
@@ -36,6 +37,10 @@ exports.checkoutOrder = async (req, res, next) => {
 		}
 
 		const UserOrder = await PizzaService.createOrder(userID, orderList);
+		const OrderShipping = await OrderShippingsModel.create({
+			...shippingData,
+			userOrderID: UserOrder.id,
+		});
 
 		res.json({ id: UserOrder.id });
 	} catch (err) {
@@ -45,11 +50,13 @@ exports.checkoutOrder = async (req, res, next) => {
 
 exports.phantomCheckoutOrder = async (req, res, next) => {
 	try {
-		const { orderList, number } = req.body;
+		const { orderList, shippingData } = req.body;
 
-		let User = await UsersModel.findOne({ where: { phoneNumber: number } });
+		let User = await UsersModel.findOne({
+			where: { phoneNumber: shippingData.phone },
+		});
 
-		if (User) {
+		if (User && User.role !== ROLES.phantom) {
 			return next(
 				ApiError.badRequest(
 					"User with this phone number already exists, please sign in"
@@ -58,7 +65,7 @@ exports.phantomCheckoutOrder = async (req, res, next) => {
 		}
 
 		User = await UsersModel.create({
-			phoneNumber: number,
+			phoneNumber: shippingData.phone,
 			role: ROLES.phantom,
 		});
 
@@ -67,6 +74,10 @@ exports.phantomCheckoutOrder = async (req, res, next) => {
 		}
 
 		const UserOrder = await PizzaService.createOrder(User.id, orderList);
+		const OrderShipping = await OrderShippingsModel.create({
+			...shippingData,
+			userOrderID: UserOrder.id,
+		});
 
 		res.json({ id: UserOrder.id });
 	} catch (err) {
@@ -139,10 +150,15 @@ exports.userOrderList = async (req, res, next) => {
 				order: [["createdAt", "DESC"]],
 				distinct: true,
 				where: { userID: id },
-				include: [{ model: PizzaOrdersModel, attributes: ["props", "totalPrice", "count"], include: PizzasModel }],
+				include: [
+					{
+						model: PizzaOrdersModel,
+						attributes: ["props", "totalPrice", "count"],
+						include: PizzasModel,
+					},
+				],
 				attributes: ["id", "status", "createdAt"],
 			});
-
 
 		const mappedOrders = orders.map((x) => {
 			const order = x.get({ plain: true });
@@ -158,6 +174,20 @@ exports.userOrderList = async (req, res, next) => {
 		});
 
 		res.json({ list: mappedOrders, totalCount });
+	} catch (error) {
+		next(error);
+	}
+};
+
+exports.shippingOrderData = async (req, res, next) => {
+	try {
+		const { id } = req.params;
+
+		const shippingData = await OrderShippingsModel.findOne({
+			where: { userOrderID: id },
+		});
+
+		res.json(shippingData);
 	} catch (error) {
 		next(error);
 	}

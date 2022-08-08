@@ -4,11 +4,11 @@ const ApiError = require("../error/ApiError");
 const autorized = (req, res, next) => {
 	const { role } = res.locals;
 
-	if(!role || role === ROLES.phantom) {
+	if (!role || role === ROLES.phantom) {
 		return next(ApiError.forbidden());
 	}
 
-	next();
-}
+	return next();
+};
 
 module.exports = autorized;
