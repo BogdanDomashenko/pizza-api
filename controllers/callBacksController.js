@@ -23,7 +23,9 @@ exports.addCallBack = async (req, res, next) => {
 
 exports.callBacksList = async (req, res, next) => {
 	try {
-		const list = await CallBacksModel.findAll();
+		const list = await CallBacksModel.findAll({
+			include: { model: UsersModel, attributes: ["phoneNumber"] },
+		});
 
 		return res.json(list);
 	} catch (err) {
