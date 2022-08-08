@@ -112,18 +112,21 @@ exports.orderList = async (req, res, next) => {
 				order: [["createdAt", "DESC"]],
 				distinct: true,
 				include: [
-					{ model: PizzasModel },
-					{ model: UsersModel, attributes: ["id", "phoneNumber", "role"] },
+					{
+						model: PizzaOrdersModel,
+						attributes: ["props", "totalPrice", "count"],
+						include: PizzasModel,
+					},
+					UsersModel
 				],
 				attributes: ["id", "status", "createdAt"],
 			});
 
 		const mappedOrders = orders.map((x) => {
 			const order = x.get({ plain: true });
-
 			let totalOrderPrice = 0;
-			order.pizzas.forEach((pizza) => {
-				totalOrderPrice += pizza.pizzaOrders.totalPrice;
+			order.pizzaOrders.forEach((item) => {
+				totalOrderPrice += item.totalPrice;
 			});
 
 			return {
