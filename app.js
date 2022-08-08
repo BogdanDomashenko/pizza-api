@@ -16,10 +16,15 @@ const tokenRouter = require("./routes/token");
 const pizzaRouter = require("./routes/pizza");
 const statisticsRouter = require("./routes/statistics");
 const userRouter = require("./routes/user");
+const callBacksRouter = require("./routes/callBacks");
 
 const errorHandler = require("./middleware/ErrorHandling");
 const verifyToken = require("./middleware/verifyToken");
-const { UsersModel, PizzaOrdersModel, UserOrdersModel } = require("./models/models");
+const {
+	UsersModel,
+	PizzaOrdersModel,
+	UserOrdersModel,
+} = require("./models/models");
 
 const app = express();
 
@@ -63,6 +68,7 @@ app.use("/auth", authRouter);
 app.use("/pizza", pizzaRouter);
 app.use("/statistics", statisticsRouter);
 app.use("/user", userRouter);
+app.use("/call-backs", callBacksRouter);
 
 app.use(errorHandler);
 

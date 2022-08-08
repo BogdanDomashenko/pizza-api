@@ -79,6 +79,15 @@ const OrderShippingsModel = sequelize.define("orderShippings", {
 	paymentMethod: { type: DataTypes.STRING(45) },
 });
 
+const CallBacksModel = sequelize.define(
+	"callBacks",
+	{
+		id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+		userID: { type: DataTypes.INTEGER, unique: true },
+	},
+	{ timestamps: true }
+);
+
 /* PizzasModel.hasOne(CategoryModel);
 CategoryModel.belongsTo(PizzasModel); */
 
@@ -126,6 +135,11 @@ UserOrdersModel.belongsTo(UsersModel);
 PizzasModel.hasMany(PizzaOrdersModel);
 PizzaOrdersModel.belongsTo(PizzasModel);
 
+UsersModel.hasOne(CallBacksModel, {
+	foreignKey: "id",
+});
+CallBacksModel.belongsTo(UsersModel, { foreignKey: "userID" });
+
 module.exports = {
 	PizzasModel,
 	TypesModel,
@@ -137,4 +151,5 @@ module.exports = {
 	PizzaSizesModel,
 	PizzaTypesModel,
 	OrderShippingsModel,
+	CallBacksModel,
 };
