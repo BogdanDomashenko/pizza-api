@@ -30,3 +30,15 @@ exports.callBacksList = async (req, res, next) => {
 		next(err);
 	}
 };
+
+exports.deleteCallBack = async (req, res, next) => {
+	try {
+		const { id } = req.params;
+
+		await CallBacksModel.destroy({ where: { id } });
+
+		res.sendStatus(200);
+	} catch (err) {
+		next(err);
+	}
+};
