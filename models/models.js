@@ -88,6 +88,11 @@ const CallBacksModel = sequelize.define(
 	{ timestamps: true }
 );
 
+const DeliveryModel = sequelize.define("deliveries", {
+	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+	price: { type: DataTypes.INTEGER },
+})
+
 /* PizzasModel.hasOne(CategoryModel);
 CategoryModel.belongsTo(PizzasModel); */
 
@@ -152,4 +157,5 @@ module.exports = {
 	PizzaTypesModel,
 	OrderShippingsModel,
 	CallBacksModel,
+	DeliveryModel
 };

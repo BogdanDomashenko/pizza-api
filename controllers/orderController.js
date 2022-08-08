@@ -9,6 +9,7 @@ const {
 const { getOrder } = require("../services/OrderService");
 const { ROLES } = require("../utils/constants/userRolesConsts");
 const { PizzaService } = require("../services/PizzaService");
+const { DeliveryService } = require("../services/DeliveryService");
 
 exports.getOrder = async (req, res, next) => {
 	try {
@@ -122,9 +123,11 @@ exports.orderList = async (req, res, next) => {
 				attributes: ["id", "status", "createdAt"],
 			});
 
+		const deliveryPrice = await DeliveryService.getPrice();
+
 		const mappedOrders = orders.map((x) => {
 			const order = x.get({ plain: true });
-			let totalOrderPrice = 0;
+			let totalOrderPrice = deliveryPrice;
 			order.pizzaOrders.forEach((item) => {
 				totalOrderPrice += item.totalPrice;
 			});
@@ -163,9 +166,11 @@ exports.userOrderList = async (req, res, next) => {
 				attributes: ["id", "status", "createdAt"],
 			});
 
+		const deliveryPrice = await DeliveryService.getPrice();
+
 		const mappedOrders = orders.map((x) => {
 			const order = x.get({ plain: true });
-			let totalOrderPrice = 0;
+			let totalOrderPrice = deliveryPrice;
 			order.pizzaOrders.forEach((item) => {
 				totalOrderPrice += item.totalPrice;
 			});
@@ -195,3 +200,24 @@ exports.shippingOrderData = async (req, res, next) => {
 		next(error);
 	}
 };
+
+exports.deliveryPrice = async (req, res, next) => {
+	try {
+		const price = await DeliveryService.getPrice();
+
+		res.json({ price });
+	} catch (error) {
+		next(error);
+	}
+}
+
+exports.setDeliveryPrice = async (req, res, next) => {
+	try {
+		const { price } = req.body;
+		await DeliveryService.setPrice(price);
+
+		res.sendStatus(200);
+	} catch (error) {
+		next(error);
+	}
+}
