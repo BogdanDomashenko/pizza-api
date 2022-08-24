@@ -3,10 +3,10 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
+		"db:seed": "node ./seeders/seed",
 		"db:rm": "sudo docker compose rm db -s -f -v",
 		"db:up": "sudo docker compose up db -d",
 		"db:restart": "npm run db:rm && npm run db:up",
-		"db:seed": "node ./seeders/seed",
 		"start": "node ./bin/www",
 		"dev": "nodemon ./bin/www"
 	},
