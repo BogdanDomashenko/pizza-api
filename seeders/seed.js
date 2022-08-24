@@ -8,7 +8,7 @@ const seed = async () => {
 		await sequelize.authenticate();
 		await sequelize.sync();
 
-		//seedProducts();
+		seedProducts();
 		seedUsers();
 	} catch (e) {
 		console.log(e);

@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const { ProductModel } = require("../../models/ProductModels");
 const { UserModel, OrderModel } = require("../../models/UserModels");
 const { ORDER_STATUSES } = require("../../utils/constants/orderStatusesConsts");
 const { ROLES } = require("../../utils/constants/userRolesConsts");
@@ -12,7 +13,9 @@ exports.seedUsers = async () => {
 		role: ROLES.admin,
 	});
 
-	const order = await OrderModel.create({ userId: user.id });
+	const product = await ProductModel.findOne({ where: { id: 1 } });
+	const order = await OrderModel.create({ UserId: user.id });
+	await order.addProduct(product);
 
 	console.log(order);
 };
