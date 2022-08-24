@@ -5,7 +5,8 @@
 	"scripts": {
 		"db:rm": "sudo docker compose rm db -s -f -v",
 		"db:up": "sudo docker compose up db -d",
-		"db:dev:restart": "npm run db:dev:rm && npm run db:dev:up && sleep 2 && npm run prisma:dev:deploy",
+		"db:restart": "npm run db:rm && npm run db:up",
+		"db:seed": "node ./seeders/seed",
 		"start": "node ./bin/www",
 		"dev": "nodemon ./bin/www"
 	},

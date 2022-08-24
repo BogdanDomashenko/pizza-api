@@ -24,6 +24,8 @@ const {
 	UsersModel,
 	PizzaOrdersModel,
 	UserOrdersModel,
+	ProductModel,
+	CategoryModel,
 } = require("./models/models");
 
 const app = express();
