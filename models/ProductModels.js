@@ -1,53 +1,51 @@
 const sequelize = require("../db");
 const { DataTypes } = require("sequelize");
-const { ROLES } = require("../utils/constants/userRolesConsts");
 
-const ProductModel = sequelize.define("products", {
+const ProductModel = sequelize.define("Products", {
 	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 	name: { type: DataTypes.STRING },
 	price: { type: DataTypes.INTEGER },
 	rating: { type: DataTypes.INTEGER },
 });
 
-const CategoryModel = sequelize.define("category", {
+const CategoryModel = sequelize.define("Categories", {
 	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 	name: { type: DataTypes.STRING },
 });
 
-const ProductImage = sequelize.define("Product_Images", {
+const ProductImage = sequelize.define("ProductImages", {
 	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 	url: { type: DataTypes.STRING },
 });
 
-const TypesModel = sequelize.define("types", {
+const TypeModel = sequelize.define("Types", {
 	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 	name: { type: DataTypes.STRING(45) },
 	price: { type: DataTypes.INTEGER },
 });
 
-const SizesModel = sequelize.define("sizes", {
+const SizeModel = sequelize.define("Sizes", {
 	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 	name: { type: DataTypes.STRING(45) },
 	price: { type: DataTypes.INTEGER },
 });
 
-//PRODUCT RELATIONS
 CategoryModel.hasOne(ProductModel, { foreignKey: "categoryId" });
 ProductModel.belongsTo(CategoryModel, { foreignKey: "categoryId" });
 
 ProductModel.hasMany(ProductImage);
 ProductImage.belongsTo(ProductModel);
 
-ProductModel.belongsToMany(TypesModel, { through: "Product_Types" });
-TypesModel.belongsToMany(ProductModel, { through: "Product_Types" });
+ProductModel.belongsToMany(TypeModel, { through: "Product_Types" });
+TypeModel.belongsToMany(ProductModel, { through: "Product_Types" });
 
-ProductModel.belongsToMany(SizesModel, { through: "Product_Sizes" });
-SizesModel.belongsToMany(ProductModel, { through: "Product_Sizes" });
+ProductModel.belongsToMany(SizeModel, { through: "Product_Sizes" });
+SizeModel.belongsToMany(ProductModel, { through: "Product_Sizes" });
 
 module.exports = {
 	ProductModel,
 	ProductImage,
 	CategoryModel,
-	SizesModel,
-	TypesModel,
+	SizeModel,
+	TypeModel,
 };
