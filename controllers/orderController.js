@@ -3,7 +3,7 @@ const {
 	UsersModel,
 	PizzaOrdersModel,
 	UserOrdersModel,
-	PizzasModel,
+	ProductModel,
 	OrderShippingsModel,
 } = require("../models/models");
 const { getOrder } = require("../services/OrderService");
@@ -116,9 +116,9 @@ exports.orderList = async (req, res, next) => {
 					{
 						model: PizzaOrdersModel,
 						attributes: ["props", "totalPrice", "count"],
-						include: PizzasModel,
+						include: ProductModel,
 					},
-					UsersModel
+					UsersModel,
 				],
 				attributes: ["id", "status", "createdAt"],
 			});
@@ -160,7 +160,7 @@ exports.userOrderList = async (req, res, next) => {
 					{
 						model: PizzaOrdersModel,
 						attributes: ["props", "totalPrice", "count"],
-						include: PizzasModel,
+						include: ProductModel,
 					},
 				],
 				attributes: ["id", "status", "createdAt"],
@@ -209,7 +209,7 @@ exports.deliveryPrice = async (req, res, next) => {
 	} catch (error) {
 		next(error);
 	}
-}
+};
 
 exports.setDeliveryPrice = async (req, res, next) => {
 	try {
@@ -220,4 +220,4 @@ exports.setDeliveryPrice = async (req, res, next) => {
 	} catch (error) {
 		next(error);
 	}
-}
+};

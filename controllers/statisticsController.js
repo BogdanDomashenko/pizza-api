@@ -1,13 +1,13 @@
 const { Sequelize } = require("../db");
 const {
 	PizzaOrdersModel,
-	PizzasModel,
+	ProductModel,
 	UserOrdersModel,
 } = require("../models/models");
 
 exports.pizzaPopularity = async (req, res, next) => {
 	try {
-		const pizzas = await PizzasModel.findAll({
+		const pizzas = await ProductModel.findAll({
 			include: [{ model: PizzaOrdersModel }],
 		});
 
@@ -28,7 +28,7 @@ exports.salesBy = async (req, res, next) => {
 		const by = req.query.by;
 		const num = Number.parseInt(req.query.num);
 
-		const pizzas = await PizzasModel.findAll({
+		const pizzas = await ProductModel.findAll({
 			include: [
 				{
 					model: UserOrdersModel,
