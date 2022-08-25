@@ -1,12 +1,18 @@
 const express = require("express");
 const {
-  pizzaUpdate,
-  pizzaSizes,
-  pizzaTypes,
-  addPizza,
-  deletePizza,
-  pizzaList, updateType, updateSize, addSize, addType, deleteType, deleteSize
-} = require("../controllers/pizzaController");
+	pizzaUpdate,
+	pizzaSizes,
+	pizzaTypes,
+	addPizza,
+	deletePizza,
+	pizzaList,
+	updateType,
+	updateSize,
+	addSize,
+	addType,
+	deleteType,
+	deleteSize,
+} = require("../controllers/productController");
 const verifyRoles = require("../middleware/verifyRoles");
 const { ROLES } = require("../utils/constants/userRolesConsts");
 const router = express.Router();

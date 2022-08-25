@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const ApiError = require("../error/ApiError");
-const { UsersModel } = require("../models/models");
+const { UserModel } = require("../models/UserModels");
 const { ROLES } = require("../utils/constants/userRolesConsts");
 
 const verifyToken = (req, res, next) => {
@@ -13,7 +13,7 @@ const verifyToken = (req, res, next) => {
 				async (err, user) => {
 					if (err) return next(ApiError.badRequest("Access token not valid"));
 
-					const UserDB = await UsersModel.findOne({ where: { id: user.id } });
+					const UserDB = await UserModel.findOne({ where: { id: user.id } });
 					// if(UserDB.id !== user.id || UserDB.phoneNumber !== user.phoneNumber || UserDB.role !== user.role) {
 					// 	return next(ApiError.conflict("User data is out of date"));
 					// }

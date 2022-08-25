@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const ApiError = require("../error/ApiError");
-const { UsersModel } = require("../models/models");
+const { UserModel } = require("../models/UserModels");
 const {
 	generateAccessToken,
 	generateRefreshToken,
@@ -37,9 +37,9 @@ exports.refreshToken = (req, res, next) => {
 				req.cookies.refreshToken || " ",
 				process.env.REFRESH_TOKEN_SECRET,
 				async (err, user) => {
-					if (err) return  next(ApiError.unauthorized());
+					if (err) return next(ApiError.unauthorized());
 
-					const { id, phoneNumber, role } = await UsersModel.findOne({
+					const { id, phoneNumber, role } = await UserModel.findOne({
 						where: { id: user.id },
 					});
 					const data = { id, phoneNumber, role };

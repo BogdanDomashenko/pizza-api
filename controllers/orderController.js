@@ -8,7 +8,7 @@ const {
 } = require("../models/models");
 const { getOrder } = require("../services/OrderService");
 const { ROLES } = require("../utils/constants/userRolesConsts");
-const { PizzaService } = require("../services/PizzaService");
+const { ProductService } = require("../services/ProductService");
 const { DeliveryService } = require("../services/DeliveryService");
 
 exports.getOrder = async (req, res, next) => {
@@ -37,7 +37,7 @@ exports.checkoutOrder = async (req, res, next) => {
 			return next(ApiError.badRequest("'orderList' param cannot be empty"));
 		}
 
-		const UserOrder = await PizzaService.createOrder(userID, orderList);
+		const UserOrder = await ProductService.createOrder(userID, orderList);
 		const OrderShipping = await OrderShippingsModel.create({
 			...shippingData,
 			userOrderID: UserOrder.id,
@@ -74,7 +74,7 @@ exports.phantomCheckoutOrder = async (req, res, next) => {
 			return next(ApiError.badRequest("'orderList' param cannot be empty"));
 		}
 
-		const UserOrder = await PizzaService.createOrder(User.id, orderList);
+		const UserOrder = await ProductService.createOrder(User.id, orderList);
 		const OrderShipping = await OrderShippingsModel.create({
 			...shippingData,
 			userOrderID: UserOrder.id,
@@ -118,7 +118,7 @@ exports.orderList = async (req, res, next) => {
 						attributes: ["props", "totalPrice", "count"],
 						include: PizzasModel,
 					},
-					UsersModel
+					UsersModel,
 				],
 				attributes: ["id", "status", "createdAt"],
 			});
@@ -209,7 +209,7 @@ exports.deliveryPrice = async (req, res, next) => {
 	} catch (error) {
 		next(error);
 	}
-}
+};
 
 exports.setDeliveryPrice = async (req, res, next) => {
 	try {
@@ -220,4 +220,4 @@ exports.setDeliveryPrice = async (req, res, next) => {
 	} catch (error) {
 		next(error);
 	}
-}
+};

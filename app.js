@@ -10,23 +10,16 @@ const cors = require("cors");
 const indexRouter = require("./routes/index");
 const stockRouter = require("./routes/stock");
 const categoryRouter = require("./routes/category");
-const orderRouter = require("./routes/order");
-const authRouter = require("./routes/auth");
+/* const orderRouter = require("./routes/order");
+const authRouter = require("./routes/auth"); */
 const tokenRouter = require("./routes/token");
-const pizzaRouter = require("./routes/pizza");
+/* const productRouter = require("./routes/product");
 const statisticsRouter = require("./routes/statistics");
 const userRouter = require("./routes/user");
-const callBacksRouter = require("./routes/callBacks");
+const callBacksRouter = require("./routes/callBacks");  */
 
 const errorHandler = require("./middleware/ErrorHandling");
 const verifyToken = require("./middleware/verifyToken");
-const {
-	UsersModel,
-	PizzaOrdersModel,
-	UserOrdersModel,
-	ProductModel,
-	CategoryModel,
-} = require("./models/models");
 
 const app = express();
 
@@ -65,12 +58,12 @@ app.use(verifyToken);
 app.use("/", indexRouter);
 app.use("/stock", stockRouter);
 app.use("/category", categoryRouter);
-app.use("/order", orderRouter);
+/*app.use("/order", orderRouter);
 app.use("/auth", authRouter);
-app.use("/pizza", pizzaRouter);
+app.use("/product", productRouter);
 app.use("/statistics", statisticsRouter);
 app.use("/user", userRouter);
-app.use("/call-backs", callBacksRouter);
+app.use("/call-backs", callBacksRouter); */
 
 app.use(errorHandler);
 

@@ -6,7 +6,7 @@ const {
 	PizzaSizesModel,
 	PizzaTypesModel,
 } = require("../models/models");
-const { PizzaService } = require("../services/PizzaService");
+const { ProductService } = require("../services/ProductService");
 
 exports.pizzaUpdate = async (req, res, next) => {
 	try {
@@ -21,7 +21,7 @@ exports.pizzaUpdate = async (req, res, next) => {
 
 exports.pizzaSizes = async (req, res, next) => {
 	try {
-		const sizes = await PizzaService.getPizzaSizes();
+		const sizes = await ProductService.getProductSizes();
 
 		return res.json(sizes);
 	} catch (err) {
@@ -31,7 +31,7 @@ exports.pizzaSizes = async (req, res, next) => {
 
 exports.pizzaTypes = async (req, res, next) => {
 	try {
-		const types = await PizzaService.getPizzaTypes();
+		const types = await ProductService.getPizzaTypes();
 
 		return res.json(types);
 	} catch (err) {
@@ -92,26 +92,26 @@ exports.pizzaList = async (req, res, next) => {
 exports.updateType = async (req, res, next) => {
 	try {
 		const { id, name, price } = req.body;
-				
+
 		await TypesModel.update({ id, name, price }, { where: { id } });
-		
+
 		return res.sendStatus(200);
 	} catch (err) {
 		return next(err);
 	}
-}
+};
 
 exports.updateSize = async (req, res, next) => {
 	try {
 		const { id, name, price } = req.body;
 
-		await SizesModel.update({ name, price }, { where: { id }});
+		await SizesModel.update({ name, price }, { where: { id } });
 
 		return res.sendStatus(200);
 	} catch (err) {
 		return next(err);
 	}
-}
+};
 
 exports.addType = async (req, res, next) => {
 	try {
@@ -123,7 +123,7 @@ exports.addType = async (req, res, next) => {
 	} catch (err) {
 		return next(err);
 	}
-}
+};
 
 exports.addSize = async (req, res, next) => {
 	try {
@@ -135,7 +135,7 @@ exports.addSize = async (req, res, next) => {
 	} catch (err) {
 		return next(err);
 	}
-}
+};
 
 exports.deleteSize = async (req, res, next) => {
 	try {
@@ -148,7 +148,7 @@ exports.deleteSize = async (req, res, next) => {
 	} catch (err) {
 		return next(err);
 	}
-}
+};
 
 exports.deleteType = async (req, res, next) => {
 	try {
@@ -161,4 +161,4 @@ exports.deleteType = async (req, res, next) => {
 	} catch (err) {
 		return next(err);
 	}
-}
+};
