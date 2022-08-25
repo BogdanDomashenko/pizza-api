@@ -15,7 +15,7 @@ exports.availableProducts = async (req, res, next) => {
 		const page = Number.parseInt(req.query.page);
 		const size = Number.parseInt(req.query.size);
 
-		const where = category ? { category } : null;
+		const where = category ? { categoryId: category } : null;
 
 		const { count: totalCount, rows: list } =
 			await ProductModel.findAndCountAll({
@@ -43,6 +43,7 @@ exports.availableProducts = async (req, res, next) => {
 						model: CategoryModel,
 					},
 				],
+				where,
 			});
 
 		const sizes = await ProductService.getProductSizes();
