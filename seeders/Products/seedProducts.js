@@ -180,8 +180,8 @@ const Products = [
 
 exports.seedProducts = async () => {
 	await CategoryModel.bulkCreate(categories);
-	const createdSizes = await SizeModel.bulkCreate(types);
-	const createdTypes = await TypeModel.bulkCreate(sizes);
+	const createdSizes = await SizeModel.bulkCreate(sizes);
+	const createdTypes = await TypeModel.bulkCreate(types);
 
 	Products.forEach(async (product) => {
 		const newProduct = await ProductModel.create(product, {

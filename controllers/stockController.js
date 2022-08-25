@@ -5,6 +5,8 @@ const {
 	ProductModel,
 	SizeModel,
 	TypeModel,
+	ProductImage,
+	CategoryModel,
 } = require("../models/ProductModels");
 
 exports.availableProducts = async (req, res, next) => {
@@ -20,6 +22,7 @@ exports.availableProducts = async (req, res, next) => {
 				limit: size,
 				offset: size * page,
 				distinct: true,
+				attributes: ["id", "name", "price", "rating"],
 				include: [
 					{
 						model: SizeModel,
@@ -31,6 +34,13 @@ exports.availableProducts = async (req, res, next) => {
 
 						where: {},
 						through: { attributes: [] },
+					},
+					{
+						model: ProductImage,
+						attributes: ["url"],
+					},
+					{
+						model: CategoryModel,
 					},
 				],
 			});
