@@ -5,6 +5,7 @@ const {
 	CategoryModel,
 	ProductImage,
 } = require("../../models/ProductModels");
+const { OrderProductsModel } = require("../../models/UserModels");
 
 const categories = [
 	{ id: 1, name: "Pizzas" },

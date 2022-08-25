@@ -27,6 +27,7 @@ const OrderModel = sequelize.define(
 const OrderProductsModel = sequelize.define("OrderProducts", {
 	count: { type: DataTypes.INTEGER },
 	totalPrice: { type: DataTypes.INTEGER },
+	count: { type: DataTypes.INTEGER },
 });
 
 const CallBackModel = sequelize.define(
@@ -42,15 +43,16 @@ OrderModel.belongsTo(UserModel);
 
 /* OrderModel.hasMany(OrderProductsModel);
 OrderProductsModel.belongsTo(OrderModel);
-
-TypeModel.hasOne(OrderProductsModel, { foreignKey: "typeId" });
-OrderProductsModel.belongsTo(TypeModel, { foreignKey: "typeId" });
-
-SizeModel.hasOne(OrderProductsModel, { foreignKey: "sizeId" });
-OrderProductsModel.belongsTo(SizeModel, { foreignKey: "sizeId" }); */
+*/
 
 OrderModel.belongsToMany(ProductModel, { through: OrderProductsModel });
 ProductModel.belongsToMany(OrderModel, { through: OrderProductsModel });
+
+TypeModel.hasOne(OrderProductsModel, { foreignKey: "TypeId" });
+OrderProductsModel.belongsTo(TypeModel, { foreignKey: "TypeId" });
+
+SizeModel.hasOne(OrderProductsModel, { foreignKey: "SizeId" });
+OrderProductsModel.belongsTo(SizeModel, { foreignKey: "SizeId" });
 
 UserModel.hasOne(CallBackModel);
 CallBackModel.belongsTo(UserModel);

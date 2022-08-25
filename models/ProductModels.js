@@ -36,11 +36,11 @@ ProductModel.belongsTo(CategoryModel, { foreignKey: "categoryId" });
 ProductModel.hasMany(ProductImage);
 ProductImage.belongsTo(ProductModel);
 
-ProductModel.belongsToMany(TypeModel, { through: "Product_Types" });
-TypeModel.belongsToMany(ProductModel, { through: "Product_Types" });
+ProductModel.belongsToMany(TypeModel, { through: "ProductTypes" });
+TypeModel.belongsToMany(ProductModel, { through: "ProductTypes" });
 
-ProductModel.belongsToMany(SizeModel, { through: "Product_Sizes" });
-SizeModel.belongsToMany(ProductModel, { through: "Product_Sizes" });
+ProductModel.belongsToMany(SizeModel, { through: "ProductSizes" });
+SizeModel.belongsToMany(ProductModel, { through: "ProductSizes" });
 
 module.exports = {
 	ProductModel,

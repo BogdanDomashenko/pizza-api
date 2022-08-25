@@ -8,8 +8,8 @@ const seed = async () => {
 		await sequelize.authenticate();
 		await sequelize.sync();
 
-		seedProducts();
-		seedUsers();
+		//await seedProducts();
+		await seedUsers();
 	} catch (e) {
 		console.log(e);
 	}
