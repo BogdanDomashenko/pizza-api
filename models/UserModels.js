@@ -75,10 +75,8 @@ OrderProductsModel.belongsTo(TypeModel, { foreignKey: "TypeId" });
 SizeModel.hasOne(OrderProductsModel, { foreignKey: "SizeId" });
 OrderProductsModel.belongsTo(SizeModel, { foreignKey: "SizeId" });
 
-OrderModel.hasOne(OrderShippingModel, {
-	foreignKey: "OrderId",
-});
-OrderShippingModel.belongsTo(OrderModel, { foreignKey: "OrderId" });
+OrderShippingModel.hasOne(OrderModel);
+OrderModel.belongsTo(OrderShippingModel);
 
 UserModel.hasOne(CallBackModel);
 CallBackModel.belongsTo(UserModel);

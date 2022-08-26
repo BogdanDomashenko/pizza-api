@@ -7,7 +7,7 @@ const {
 	DeliveryModel,
 } = require("../../models/UserModels");
 const { DeliveryService } = require("../../services/DeliveryService");
-const { OrderSirvice } = require("../../services/OrderService");
+const { OrderService } = require("../../services/OrderService");
 const { ORDER_STATUSES } = require("../../utils/constants/orderStatusesConsts");
 const { ROLES } = require("../../utils/constants/userRolesConsts");
 
@@ -41,5 +41,5 @@ exports.seedUsers = async () => {
 		SizeId: 1,
 	}));
 
-	await OrderSirvice.create(mappedProducts, 1);
+	await OrderService.create(mappedProducts, 1);
 };

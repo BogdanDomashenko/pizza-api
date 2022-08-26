@@ -22,11 +22,11 @@ const {
   return Order;
 }; */
 
-exports.OrderSirvice = {
-	async create(products, UserId, shipping) {
+exports.OrderService = {
+	async create(products, UserId, OrderShipping) {
 		const order = await OrderModel.create(
-			{ UserId, shipping },
-			{ include: { model: OrderShippingModel, as: "shipping" } }
+			{ UserId, OrderShipping },
+			{ include: { model: OrderShippingModel } }
 		);
 
 		let totalPrice = 0;
