@@ -1,5 +1,9 @@
 const { ProductModel } = require("../models/ProductModels");
-const { OrderModel, OrderProductsModel } = require("../models/UserModels");
+const {
+	OrderModel,
+	OrderProductsModel,
+	OrderShippingModel,
+} = require("../models/UserModels");
 
 /* exports.getOrder = async (id) => {
   // const Order = await UserOrdersModel.findOne({
@@ -19,8 +23,11 @@ const { OrderModel, OrderProductsModel } = require("../models/UserModels");
 }; */
 
 exports.OrderSirvice = {
-	async create(products, UserId) {
-		const order = await OrderModel.create({ UserId });
+	async create(products, UserId, shipping) {
+		const order = await OrderModel.create(
+			{ UserId, shipping },
+			{ include: { model: OrderShippingModel, as: "shipping" } }
+		);
 
 		let totalPrice = 0;
 

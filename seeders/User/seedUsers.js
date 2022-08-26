@@ -4,7 +4,9 @@ const {
 	UserModel,
 	OrderModel,
 	OrderProductsModel,
+	DeliveryModel,
 } = require("../../models/UserModels");
+const { DeliveryService } = require("../../services/DeliveryService");
 const { OrderSirvice } = require("../../services/OrderService");
 const { ORDER_STATUSES } = require("../../utils/constants/orderStatusesConsts");
 const { ROLES } = require("../../utils/constants/userRolesConsts");
@@ -29,6 +31,8 @@ exports.seedUsers = async () => {
  */
 
 	const products = await ProductModel.findAll();
+
+	await DeliveryModel.create({ price: 2 });
 
 	const mappedProducts = products.map((product) => ({
 		...product.dataValues,

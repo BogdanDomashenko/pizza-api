@@ -30,10 +30,31 @@ const OrderProductsModel = sequelize.define("OrderProducts", {
 	count: { type: DataTypes.INTEGER },
 });
 
+const OrderShippingModel = sequelize.define("OrderShippings", {
+	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+	firstName: { type: DataTypes.STRING(45) },
+	lastName: { type: DataTypes.STRING(45) },
+	address: { type: DataTypes.STRING(225) },
+	city: { type: DataTypes.STRING(45) },
+	email: { type: DataTypes.STRING(45) },
+	phone: { type: DataTypes.STRING(45) },
+	postCode: { type: DataTypes.STRING(45) },
+	paymentMethod: { type: DataTypes.STRING(45) },
+});
+
 const CallBackModel = sequelize.define(
 	"CallBacks",
 	{
 		id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+	},
+	{ timestamps: true }
+);
+
+const DeliveryModel = sequelize.define(
+	"DeliveryModel",
+	{
+		id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+		price: { type: DataTypes.INTEGER },
 	},
 	{ timestamps: true }
 );
@@ -54,6 +75,11 @@ OrderProductsModel.belongsTo(TypeModel, { foreignKey: "TypeId" });
 SizeModel.hasOne(OrderProductsModel, { foreignKey: "SizeId" });
 OrderProductsModel.belongsTo(SizeModel, { foreignKey: "SizeId" });
 
+OrderModel.hasOne(OrderShippingModel, {
+	foreignKey: "OrderId",
+});
+OrderShippingModel.belongsTo(OrderModel, { foreignKey: "OrderId" });
+
 UserModel.hasOne(CallBackModel);
 CallBackModel.belongsTo(UserModel);
 
@@ -62,4 +88,6 @@ module.exports = {
 	OrderModel,
 	OrderProductsModel,
 	CallBackModel,
+	DeliveryModel,
+	OrderShippingModel,
 };

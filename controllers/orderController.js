@@ -3,7 +3,7 @@ const { UserModel, OrderShippingsModel } = require("../models/UserModels");
 const { ROLES } = require("../utils/constants/userRolesConsts");
 const { OrderService } = require("../services/OrderService");
 const { ProductService } = require("../services/ProductService");
-//const { DeliveryService } = require("../services/DeliveryService");
+const { DeliveryService } = require("../services/DeliveryService");
 
 /* exports.getOrder = async (req, res, next) => {
 	try {
@@ -31,7 +31,7 @@ exports.checkoutOrder = async (req, res, next) => {
 			return next(ApiError.badRequest("'orderList' param cannot be empty"));
 		}
 
-		const order = await OrderService.create(orderList, userId);
+		const order = await OrderService.create(orderList, userId, shippingData);
 
 		res.json({ id: order.id });
 	} catch (err) {
@@ -190,6 +190,7 @@ exports.shippingOrderData = async (req, res, next) => {
 		next(error);
 	}
 };
+*/
 
 exports.deliveryPrice = async (req, res, next) => {
 	try {
@@ -211,4 +212,3 @@ exports.setDeliveryPrice = async (req, res, next) => {
 		next(error);
 	}
 };
- */
