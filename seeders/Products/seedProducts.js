@@ -176,6 +176,54 @@ const Products = [
 		categoryId: 1,
 		rating: 4,
 	},
+	{
+		id: 15,
+		name: "Fanta 0.5 l",
+		ProductImages: [
+			{
+				url: "https://cdn.dodostatic.net/static/Img/Products/c5781875bf694dbc97bc327455cd87d9_760x760.jpeg",
+			},
+		],
+		price: 4,
+		categoryId: 2,
+		rating: 6,
+	},
+	{
+		id: 16,
+		name: "Sprite 0.5 l",
+		ProductImages: [
+			{
+				url: "https://cdn.dodostatic.net/static/Img/Products/73eb242273e0477e9544104ca9b1d42f_760x760.jpeg",
+			},
+		],
+		price: 4,
+		categoryId: 2,
+		rating: 9,
+	},
+	{
+		id: 17,
+		name: "Coca-Cola 0.5 l",
+		ProductImages: [
+			{
+				url: "https://cdn.dodostatic.net/static/Img/Products/5a945ed86ef943ac9583c4a6413d9ad0_760x760.jpeg",
+			},
+		],
+		price: 4,
+		categoryId: 2,
+		rating: 10,
+	},
+	{
+		id: 18,
+		name: "Americano 0.5 l",
+		ProductImages: [
+			{
+				url: "https://cdn.dodostatic.net/static/Img/Products/8c6f4026dad743c599e85819ffff3e9c_760x760.jpeg",
+			},
+		],
+		price: 5,
+		categoryId: 2,
+		rating: 5,
+	},
 ];
 
 exports.seedProducts = async () => {

@@ -1,9 +1,9 @@
 const ApiError = require("../error/ApiError");
-const { UsersModel } = require("../models/models");
+const { UserModel } = require("../models/UserModels");
 
 exports.userList = async (req, res, next) => {
 	try {
-		const list = await UsersModel.findAll();
+		const list = await UserModel.findAll();
 
 		const mappedList = list.map((item) => ({
 			id: item.id,
@@ -20,7 +20,7 @@ exports.userList = async (req, res, next) => {
 exports.setUserRole = async (req, res, next) => {
 	try {
 		const { id, role } = req.body;
-		const user = await UsersModel.findOne({ where: { id } });
+		const user = await UserModel.findOne({ where: { id } });
 
 		if (!user.password) {
 			return next(
@@ -28,7 +28,7 @@ exports.setUserRole = async (req, res, next) => {
 			);
 		}
 
-		await UsersModel.update({ role }, { where: { id } });
+		await UserModel.update({ role }, { where: { id } });
 
 		res.sendStatus(200);
 	} catch (err) {
@@ -39,7 +39,7 @@ exports.setUserRole = async (req, res, next) => {
 exports.userData = async (req, res, next) => {
 	try {
 		const { id } = res.locals;
-		const user = await UsersModel.findOne({ where: { id } });
+		const user = await UserModel.findOne({ where: { id } });
 
 		return res.json({
 			id: user.id,

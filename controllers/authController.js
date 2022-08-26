@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 
 const ApiError = require("../error/ApiError");
-const { UsersModel, UserOrdersModel } = require("../models/models");
+const { UserModel } = require("../models/UserModels");
 const {
 	generateAccessToken,
 	generateRefreshToken,
@@ -13,7 +13,7 @@ exports.signUp = async (req, res, next) => {
 
 		const hashedPassword = await bcrypt.hash(password, 3);
 
-		const User = await UsersModel.findOne({ where: { phoneNumber } });
+		const User = await UserModel.findOne({ where: { phoneNumber } });
 		const isSignUpped = !!(User && User.password?.length);
 
 		if (isSignUpped) {
@@ -30,7 +30,7 @@ exports.signUp = async (req, res, next) => {
 			});
 		}
 
-		const newUser = await UsersModel.create({
+		const newUser = await UserModel.create({
 			phoneNumber,
 			password: hashedPassword,
 		});
@@ -60,7 +60,7 @@ exports.signIn = async (req, res, next) => {
 	try {
 		const { phoneNumber, password } = req.body;
 
-		const User = await UsersModel.findOne({ where: { phoneNumber } });
+		const User = await UserModel.findOne({ where: { phoneNumber } });
 
 		if (!User) {
 			return next(ApiError.badRequest("This user does not exists"));
