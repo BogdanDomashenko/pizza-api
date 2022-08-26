@@ -15,7 +15,7 @@ const { ROLES } = require("../utils/constants/userRolesConsts");
 const autorized = require("../middleware/autorized");
 const router = express.Router();
 
-//router.get("/info/:id", getOrder);
+router.get("/info/:id", getOrder);
 router.post("/checkout", verifyRoles(ROLES.admin), checkoutOrder);
 /* router.post("/phantom-checkout", phantomCheckoutOrder);
 router.post("/update", verifyRoles(ROLES.admin), updateOrder);

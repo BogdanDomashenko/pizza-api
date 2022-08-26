@@ -5,11 +5,11 @@ const { OrderService } = require("../services/OrderService");
 const { ProductService } = require("../services/ProductService");
 const { DeliveryService } = require("../services/DeliveryService");
 
-/* exports.getOrder = async (req, res, next) => {
+exports.getOrder = async (req, res, next) => {
 	try {
 		const { id } = req.params;
 
-		const order = await getOrder(id);
+		const order = await OrderService.get(id);
 
 		if (!order) {
 			next(ApiError.badRequest("This order is does not exists"));
@@ -19,7 +19,7 @@ const { DeliveryService } = require("../services/DeliveryService");
 	} catch (err) {
 		next(err);
 	}
-}; */
+};
 
 exports.checkoutOrder = async (req, res, next) => {
 	try {

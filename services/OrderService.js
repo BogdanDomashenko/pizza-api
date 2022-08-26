@@ -1,4 +1,9 @@
-const { ProductModel } = require("../models/ProductModels");
+const {
+	ProductModel,
+	ProductImage,
+	SizeModel,
+	TypeModel,
+} = require("../models/ProductModels");
 const {
 	OrderModel,
 	OrderProductsModel,
@@ -49,6 +54,17 @@ exports.OrderService = {
 
 		await order.update({ totalPrice, count: OrderModel.length });
 		await order.save();
+
+		return order;
+	},
+	async get(id) {
+		const order = await OrderModel.findOne({
+			where: { id },
+			include: [
+				{ model: ProductModel, include: ProductImage },
+				{ model: OrderShippingModel },
+			],
+		});
 
 		return order;
 	},

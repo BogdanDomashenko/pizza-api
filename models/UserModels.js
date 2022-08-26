@@ -69,11 +69,11 @@ OrderProductsModel.belongsTo(OrderModel);
 OrderModel.belongsToMany(ProductModel, { through: OrderProductsModel });
 ProductModel.belongsToMany(OrderModel, { through: OrderProductsModel });
 
-TypeModel.hasOne(OrderProductsModel, { foreignKey: "TypeId" });
-OrderProductsModel.belongsTo(TypeModel, { foreignKey: "TypeId" });
+OrderProductsModel.hasOne(TypeModel, { foreignKey: "TypeId" });
+TypeModel.belongsTo(OrderProductsModel, { foreignKey: "TypeId" });
 
-SizeModel.hasOne(OrderProductsModel, { foreignKey: "SizeId" });
-OrderProductsModel.belongsTo(SizeModel, { foreignKey: "SizeId" });
+OrderProductsModel.hasOne(SizeModel, { foreignKey: "SizeId" });
+SizeModel.belongsTo(SizeModel, { foreignKey: "SizeId" });
 
 OrderShippingModel.hasOne(OrderModel);
 OrderModel.belongsTo(OrderShippingModel);
