@@ -42,5 +42,7 @@ exports.OrderSirvice = {
 
 		await order.update({ totalPrice, count: OrderModel.length });
 		await order.save();
+
+		return order;
 	},
 };

@@ -1,17 +1,11 @@
 const ApiError = require("../error/ApiError");
-const {
-	UsersModel,
-	PizzaOrdersModel,
-	UserOrdersModel,
-	PizzasModel,
-	OrderShippingsModel,
-} = require("../models/models");
-const { getOrder } = require("../services/OrderService");
+const { UserModel, OrderShippingsModel } = require("../models/UserModels");
 const { ROLES } = require("../utils/constants/userRolesConsts");
+const { OrderService } = require("../services/OrderService");
 const { ProductService } = require("../services/ProductService");
-const { DeliveryService } = require("../services/DeliveryService");
+//const { DeliveryService } = require("../services/DeliveryService");
 
-exports.getOrder = async (req, res, next) => {
+/* exports.getOrder = async (req, res, next) => {
 	try {
 		const { id } = req.params;
 
@@ -25,25 +19,21 @@ exports.getOrder = async (req, res, next) => {
 	} catch (err) {
 		next(err);
 	}
-};
+}; */
 
 exports.checkoutOrder = async (req, res, next) => {
 	try {
 		const { orderList, shippingData } = req.body;
 
-		const { id: userID } = res.locals;
+		const { id: userId } = res.locals;
 
 		if (!orderList || !orderList.length) {
 			return next(ApiError.badRequest("'orderList' param cannot be empty"));
 		}
 
-		const UserOrder = await ProductService.createOrder(userID, orderList);
-		const OrderShipping = await OrderShippingsModel.create({
-			...shippingData,
-			userOrderID: UserOrder.id,
-		});
+		const order = await OrderService.create(orderList, userId);
 
-		res.json({ id: UserOrder.id });
+		res.json({ id: order.id });
 	} catch (err) {
 		next(err);
 	}
@@ -53,7 +43,7 @@ exports.phantomCheckoutOrder = async (req, res, next) => {
 	try {
 		const { orderList, shippingData } = req.body;
 
-		let User = await UsersModel.findOne({
+		let User = await UserModel.findOne({
 			where: { phoneNumber: shippingData.phone },
 		});
 
@@ -65,7 +55,7 @@ exports.phantomCheckoutOrder = async (req, res, next) => {
 			);
 		}
 
-		User = await UsersModel.create({
+		User = await UserModel.create({
 			phoneNumber: shippingData.phone,
 			role: ROLES.phantom,
 		});
@@ -85,7 +75,7 @@ exports.phantomCheckoutOrder = async (req, res, next) => {
 		next(err);
 	}
 };
-
+/* 
 exports.updateOrder = async (req, res, next) => {
 	try {
 		const { order } = req.body;
@@ -118,7 +108,7 @@ exports.orderList = async (req, res, next) => {
 						attributes: ["props", "totalPrice", "count"],
 						include: PizzasModel,
 					},
-					UsersModel,
+					UserModel,
 				],
 				attributes: ["id", "status", "createdAt"],
 			});
@@ -221,3 +211,4 @@ exports.setDeliveryPrice = async (req, res, next) => {
 		next(error);
 	}
 };
+ */

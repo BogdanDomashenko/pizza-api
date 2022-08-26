@@ -14,16 +14,18 @@ const categories = [
 ];
 
 const types = [
-	{ id: 1, name: "tiny", price: 0 },
-	{ id: 2, name: "default", price: 2 },
+	{ id: 1, name: "none" },
+	{ id: 2, name: "tiny", price: 0 },
+	{ id: 3, name: "default", price: 2 },
 ];
 const sizes = [
-	{ id: 1, name: "10", price: 0 },
-	{ id: 2, name: "12", price: 2 },
-	{ id: 3, name: "16", price: 4 },
+	{ id: 1, name: "none" },
+	{ id: 2, name: "10", price: 0 },
+	{ id: 3, name: "12", price: 2 },
+	{ id: 4, name: "16", price: 4 },
 ];
 
-const Products = [
+const pizzas = [
 	{
 		id: 1,
 		name: "White chiken",
@@ -176,6 +178,9 @@ const Products = [
 		categoryId: 1,
 		rating: 4,
 	},
+];
+
+const drinks = [
 	{
 		id: 15,
 		name: "Fanta 0.5 l",
@@ -231,17 +236,39 @@ exports.seedProducts = async () => {
 	const createdSizes = await SizeModel.bulkCreate(sizes);
 	const createdTypes = await TypeModel.bulkCreate(types);
 
-	Products.forEach(async (product) => {
+	pizzas.forEach(async (product) => {
 		const newProduct = await ProductModel.create(product, {
 			include: ProductImage,
 		});
 
 		createdSizes.forEach(async (size) => {
-			await newProduct.addSize(size);
+			if (size.dataValues.name !== "none") {
+				await newProduct.addSize(size);
+			}
 		});
 
 		createdTypes.forEach(async (type) => {
-			await newProduct.addType(type);
+			if (type.dataValues.name !== "none") {
+				await newProduct.addType(type);
+			}
+		});
+	});
+
+	drinks.forEach(async (drink) => {
+		const newDrink = await ProductModel.create(drink, {
+			include: ProductImage,
+		});
+
+		createdSizes.forEach(async (size) => {
+			if (size.dataValues.name == "none") {
+				await newDrink.addSize(size);
+			}
+		});
+
+		createdTypes.forEach(async (type) => {
+			if (type.dataValues.name == "none") {
+				await newDrink.addType(type);
+			}
 		});
 	});
 };

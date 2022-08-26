@@ -1,18 +1,18 @@
-const { CallBacksModel, UsersModel } = require("../models/models");
+const { CallBackModel, UserModel } = require("../models/UserModels");
 const { ROLES } = require("../utils/constants/userRolesConsts");
 
 exports.addCallBack = async (req, res, next) => {
 	try {
 		const { phoneNumber } = req.body;
 
-		let User = await UsersModel.findOrCreate({
+		let User = await UserModel.findOrCreate({
 			where: { phoneNumber },
 			defaults: { phoneNumber },
 		});
 
-		await CallBacksModel.findOrCreate({
-			where: { userID: User[0].id },
-			defaults: { userID: User[0].id },
+		await CallBackModel.findOrCreate({
+			where: { UserId: User[0].id },
+			defaults: { UserId: User[0].id },
 		});
 
 		res.sendStatus(200);
@@ -23,8 +23,8 @@ exports.addCallBack = async (req, res, next) => {
 
 exports.callBacksList = async (req, res, next) => {
 	try {
-		const list = await CallBacksModel.findAll({
-			include: { model: UsersModel, attributes: ["phoneNumber"] },
+		const list = await CallBackModel.findAll({
+			include: { model: UserModel, attributes: ["phoneNumber"] },
 		});
 
 		return res.json(list);
@@ -37,7 +37,7 @@ exports.deleteCallBack = async (req, res, next) => {
 	try {
 		const { id } = req.params;
 
-		await CallBacksModel.destroy({ where: { id } });
+		await CallBackModel.destroy({ where: { id } });
 
 		res.sendStatus(200);
 	} catch (err) {
