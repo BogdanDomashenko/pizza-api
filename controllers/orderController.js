@@ -43,11 +43,11 @@ exports.phantomCheckoutOrder = async (req, res, next) => {
 	try {
 		const { orderList, shippingData } = req.body;
 
-		let User = await UserModel.findOne({
+		let user = await UserModel.findOne({
 			where: { phoneNumber: shippingData.phone },
 		});
 
-		if (User && User.role !== ROLES.phantom) {
+		if (user && user.role !== ROLES.phantom) {
 			return next(
 				ApiError.badRequest(
 					"User with this phone number already exists, please sign in"
@@ -55,26 +55,39 @@ exports.phantomCheckoutOrder = async (req, res, next) => {
 			);
 		}
 
-		User = await UserModel.create({
-			phoneNumber: shippingData.phone,
-			role: ROLES.phantom,
-		});
+		if (!user) {
+			user = await UserModel.create({
+				phoneNumber: shippingData.phone,
+				role: ROLES.phantom,
+			});
+		}
 
 		if (!orderList || !orderList.length) {
 			return next(ApiError.badRequest("'orderList' param cannot be empty"));
 		}
 
-		const UserOrder = await ProductService.createOrder(User.id, orderList);
-		const OrderShipping = await OrderShippingsModel.create({
-			...shippingData,
-			userOrderID: UserOrder.id,
-		});
+		const order = await OrderService.create(orderList, user.id, shippingData);
 
-		res.json({ id: UserOrder.id });
+		res.json({ id: order.id });
 	} catch (err) {
 		next(err);
 	}
 };
+
+exports.userOrderList = async (req, res, next) => {
+	try {
+		const id = res.locals.id;
+		const page = Number.parseInt(req.query.page);
+		const size = Number.parseInt(req.query.size);
+
+		const orders = await OrderService.getByUser(id, page, size);
+
+		res.json(orders);
+	} catch (error) {
+		next(error);
+	}
+};
+
 /* 
 exports.updateOrder = async (req, res, next) => {
 	try {
@@ -134,48 +147,6 @@ exports.orderList = async (req, res, next) => {
 	}
 };
 
-exports.userOrderList = async (req, res, next) => {
-	try {
-		const id = res.locals.id;
-		const page = Number.parseInt(req.query.page);
-		const size = Number.parseInt(req.query.size);
-		const { count: totalCount, rows: orders } =
-			await UserOrdersModel.findAndCountAll({
-				limit: size,
-				offset: size * page,
-				order: [["createdAt", "DESC"]],
-				distinct: true,
-				where: { userID: id },
-				include: [
-					{
-						model: PizzaOrdersModel,
-						attributes: ["props", "totalPrice", "count"],
-						include: PizzasModel,
-					},
-				],
-				attributes: ["id", "status", "createdAt"],
-			});
-
-		const deliveryPrice = await DeliveryService.getPrice();
-
-		const mappedOrders = orders.map((x) => {
-			const order = x.get({ plain: true });
-			let totalOrderPrice = deliveryPrice;
-			order.pizzaOrders.forEach((item) => {
-				totalOrderPrice += item.totalPrice;
-			});
-
-			return {
-				...order,
-				totalOrderPrice,
-			};
-		});
-
-		res.json({ list: mappedOrders, totalCount });
-	} catch (error) {
-		next(error);
-	}
-};
 
 exports.shippingOrderData = async (req, res, next) => {
 	try {

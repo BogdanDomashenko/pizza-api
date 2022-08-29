@@ -62,10 +62,42 @@ exports.OrderService = {
 			where: { id },
 			include: {
 				model: OrderProductsModel,
-				include: { model: ProductModel, include: ProductImage },
+				attributes: ["count", "totalPrice"],
+				include: [
+					{
+						model: ProductModel,
+						include: [ProductImage],
+					},
+					TypeModel,
+					SizeModel,
+				],
 			},
 		});
 
 		return order;
+	},
+	async getByUser(UserId, page, size) {
+		const { count: totalCount, rows: orders } =
+			await OrderModel.findAndCountAll({
+				where: { UserId },
+				limit: size,
+				offset: size * page,
+				order: [["createdAt", "DESC"]],
+				attributes: ["id", "status", "createdAt", "totalPrice"],
+				include: {
+					model: OrderProductsModel,
+					attributes: ["count", "totalPrice"],
+					include: [
+						{
+							model: ProductModel,
+							include: [ProductImage],
+						},
+						TypeModel,
+						SizeModel,
+					],
+				},
+			});
+
+		return { list: orders, totalCount };
 	},
 };

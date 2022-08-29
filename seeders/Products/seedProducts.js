@@ -5,7 +5,6 @@ const {
 	CategoryModel,
 	ProductImage,
 } = require("../../models/ProductModels");
-const { OrderProductsModel } = require("../../models/UserModels");
 
 const categories = [
 	{ id: 1, name: "Pizzas" },
@@ -242,13 +241,13 @@ exports.seedProducts = async () => {
 		});
 
 		createdSizes.forEach(async (size) => {
-			if (size.dataValues.name !== "none") {
+			if (size.dataValues.name !== "none" && size.name !== "none") {
 				await newProduct.addSize(size);
 			}
 		});
 
 		createdTypes.forEach(async (type) => {
-			if (type.dataValues.name !== "none") {
+			if (type.dataValues.name !== "none" && type.name !== "none") {
 				await newProduct.addType(type);
 			}
 		});
@@ -260,13 +259,13 @@ exports.seedProducts = async () => {
 		});
 
 		createdSizes.forEach(async (size) => {
-			if (size.dataValues.name == "none") {
+			if (size.dataValues.name == "none" && size.name == "none") {
 				await newDrink.addSize(size);
 			}
 		});
 
 		createdTypes.forEach(async (type) => {
-			if (type.dataValues.name == "none") {
+			if (type.dataValues.name == "none" && type.name == "none") {
 				await newDrink.addType(type);
 			}
 		});
