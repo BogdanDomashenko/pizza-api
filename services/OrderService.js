@@ -60,10 +60,10 @@ exports.OrderService = {
 	async get(id) {
 		const order = await OrderModel.findOne({
 			where: { id },
-			include: [
-				{ model: ProductModel, include: ProductImage },
-				{ model: OrderShippingModel },
-			],
+			include: {
+				model: OrderProductsModel,
+				include: { model: ProductModel, include: ProductImage },
+			},
 		});
 
 		return order;

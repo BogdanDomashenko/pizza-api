@@ -66,14 +66,20 @@ OrderModel.belongsTo(UserModel);
 OrderProductsModel.belongsTo(OrderModel);
 */
 
-OrderModel.belongsToMany(ProductModel, { through: OrderProductsModel });
-ProductModel.belongsToMany(OrderModel, { through: OrderProductsModel });
+/* OrderModel.belongsToMany(ProductModel, { through: OrderProductsModel });
+ProductModel.belongsToMany(OrderModel, { through: OrderProductsModel }); */
 
-OrderProductsModel.hasOne(TypeModel, { foreignKey: "TypeId" });
-TypeModel.belongsTo(OrderProductsModel, { foreignKey: "TypeId" });
+OrderModel.hasMany(OrderProductsModel);
+OrderProductsModel.belongsTo(OrderModel);
 
-OrderProductsModel.hasOne(SizeModel, { foreignKey: "SizeId" });
-SizeModel.belongsTo(SizeModel, { foreignKey: "SizeId" });
+ProductModel.hasMany(OrderProductsModel);
+OrderProductsModel.belongsTo(ProductModel);
+
+TypeModel.hasOne(OrderProductsModel);
+OrderProductsModel.belongsTo(TypeModel);
+
+SizeModel.hasOne(OrderProductsModel);
+OrderProductsModel.belongsTo(SizeModel);
 
 OrderShippingModel.hasOne(OrderModel);
 OrderModel.belongsTo(OrderShippingModel);
