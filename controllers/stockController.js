@@ -60,8 +60,8 @@ exports.allStockPizzas = async (req, res, next) => {
 	const size = Number.parseInt(req.query.size);
 
 	try {
-		const { count: totalCount, rows: list } = await PizzasModel.findAndCountAll(
-			{
+		const { count: totalCount, rows: list } =
+			await ProductModel.findAndCountAll({
 				limit: size,
 				offset: size * page,
 				attributes: ["id", "name"],
@@ -69,30 +69,19 @@ exports.allStockPizzas = async (req, res, next) => {
 				distinct: true,
 				include: [
 					{
-						model: SizesModel,
+						model: SizeModel,
 						attributes: ["name"],
 						through: { attributes: [] },
 					},
 					{
-						model: TypesModel,
+						model: TypeModel,
 						attributes: ["name"],
 						through: { attributes: [] },
 					},
 				],
-			}
-		);
+			});
 
-		const parsedList = JSON.parse(JSON.stringify(list));
-
-		const resList = parsedList.map((listItem) => {
-			return {
-				...listItem,
-				sizes: listItem.sizes.map((size) => size.name),
-				types: listItem.types.map((type) => type.name),
-			};
-		});
-
-		return res.json({ list: resList, totalCount });
+		return res.json({ list: list, totalCount });
 	} catch (err) {
 		return next(err);
 	}
