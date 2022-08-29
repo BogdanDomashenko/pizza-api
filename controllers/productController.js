@@ -1,25 +1,45 @@
 const ApiError = require("../error/ApiError");
 const {
-	PizzasModel,
-	SizesModel,
-	TypesModel,
-	PizzaSizesModel,
-	PizzaTypesModel,
-} = require("../models/models");
+	ProductModel,
+	ProductImage,
+	TypeModel,
+	SizeModel,
+	ProductTypes,
+	ProductSizes,
+} = require("../models/ProductModels");
+const { OrderProductsModel } = require("../models/UserModels");
 const { ProductService } = require("../services/ProductService");
 
-exports.pizzaUpdate = async (req, res, next) => {
+exports.prodcutList = async (req, res, next) => {
+	try {
+		const page = Number.parseInt(req.query.page);
+		const size = Number.parseInt(req.query.size);
+		const { count: totalCount, rows: list } =
+			await ProductModel.findAndCountAll({
+				limit: size,
+				offset: size * page,
+				order: [["id", "DESC"]],
+				include: [ProductImage],
+			});
+
+		return res.json({ list, totalCount });
+	} catch (err) {
+		return next(err);
+	}
+};
+
+exports.productUpdate = async (req, res, next) => {
 	try {
 		const { pizza } = req.body;
 
-		await PizzasModel.update(pizza, { where: { id: pizza.id } });
+		await ProductModel.update(pizza, { where: { id: pizza.id } });
 		return res.sendStatus(200);
 	} catch (err) {
 		return next(err);
 	}
 };
 
-exports.pizzaSizes = async (req, res, next) => {
+exports.productSizes = async (req, res, next) => {
 	try {
 		const sizes = await ProductService.getProductSizes();
 
@@ -29,9 +49,9 @@ exports.pizzaSizes = async (req, res, next) => {
 	}
 };
 
-exports.pizzaTypes = async (req, res, next) => {
+exports.productTypes = async (req, res, next) => {
 	try {
-		const types = await ProductService.getPizzaTypes();
+		const types = await ProductService.getProductTypes();
 
 		return res.json(types);
 	} catch (err) {
@@ -39,31 +59,36 @@ exports.pizzaTypes = async (req, res, next) => {
 	}
 };
 
-exports.addPizza = async (req, res, next) => {
+exports.addProduct = async (req, res, next) => {
 	try {
-		const { name, imageUrl, price, category, rating } = req.body;
+		const { name, images, price, category: categoryId, rating } = req.body;
 
-		const newPizza = await PizzasModel.create({
-			name,
-			imageUrl,
-			price,
-			category,
-			rating,
-		});
+		const ProductImages = images.split(", ").map((url) => ({
+			url,
+		}));
+		const newProduct = await ProductModel.create(
+			{
+				name,
+				ProductImages,
+				price,
+				categoryId,
+				rating,
+			},
+			{ include: ProductImage }
+		);
 
-		return res.json(newPizza);
+		return res.json(newProduct);
 	} catch (err) {
 		next(err);
 	}
 };
 
-exports.deletePizza = async (req, res, next) => {
+exports.deleteProduct = async (req, res, next) => {
 	try {
 		const { id } = req.params;
 
-		await PizzaSizesModel.destroy({ where: { pizzaID: id } });
-		await PizzaTypesModel.destroy({ where: { pizzaID: id } });
-		await PizzasModel.destroy({ where: { id } });
+		await ProductImage.destroy({ where: { ProductId: id } });
+		await ProductModel.destroy({ where: { id } });
 
 		return res.sendStatus(200);
 	} catch (err) {
@@ -71,29 +96,11 @@ exports.deletePizza = async (req, res, next) => {
 	}
 };
 
-exports.pizzaList = async (req, res, next) => {
-	try {
-		const page = Number.parseInt(req.query.page);
-		const size = Number.parseInt(req.query.size);
-		const { count: totalCount, rows: list } = await PizzasModel.findAndCountAll(
-			{
-				limit: size,
-				offset: size * page,
-				order: [["id", "DESC"]],
-			}
-		);
-
-		return res.json({ list, totalCount });
-	} catch (err) {
-		return next(err);
-	}
-};
-
 exports.updateType = async (req, res, next) => {
 	try {
 		const { id, name, price } = req.body;
 
-		await TypesModel.update({ id, name, price }, { where: { id } });
+		await TypeModel.update({ id, name, price }, { where: { id } });
 
 		return res.sendStatus(200);
 	} catch (err) {
@@ -105,7 +112,7 @@ exports.updateSize = async (req, res, next) => {
 	try {
 		const { id, name, price } = req.body;
 
-		await SizesModel.update({ name, price }, { where: { id } });
+		await SizeModel.update({ name, price }, { where: { id } });
 
 		return res.sendStatus(200);
 	} catch (err) {
@@ -117,7 +124,7 @@ exports.addType = async (req, res, next) => {
 	try {
 		const { name, price } = req.body;
 
-		const newType = await TypesModel.create({ name, price });
+		const newType = await TypeModel.create({ name, price });
 
 		res.json(newType);
 	} catch (err) {
@@ -129,7 +136,7 @@ exports.addSize = async (req, res, next) => {
 	try {
 		const { name, price } = req.body;
 
-		const newSize = await SizesModel.create({ name, price });
+		const newSize = await SizeModel.create({ name, price });
 
 		res.json(newSize);
 	} catch (err) {
@@ -141,8 +148,8 @@ exports.deleteSize = async (req, res, next) => {
 	try {
 		const { id } = req.body;
 
-		await PizzaSizesModel.destroy({ where: { sizeID: id } });
-		await SizesModel.destroy({ where: { id } });
+		await ProductSizes.destroy({ where: { SizeId: id } });
+		await SizeModel.destroy({ where: { id } });
 
 		res.sendStatus(200);
 	} catch (err) {
@@ -154,8 +161,8 @@ exports.deleteType = async (req, res, next) => {
 	try {
 		const { id } = req.body;
 
-		await PizzaTypesModel.destroy({ where: { typeID: id } });
-		await TypesModel.destroy({ where: { id } });
+		await ProductTypes.destroy({ where: { TypeId: id } });
+		await TypeModel.destroy({ where: { id } });
 
 		res.sendStatus(200);
 	} catch (err) {
