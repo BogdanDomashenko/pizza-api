@@ -7,6 +7,8 @@ const {
 	TypeModel,
 	ProductImage,
 	CategoryModel,
+	ProductSizes,
+	ProductTypes,
 } = require("../models/ProductModels");
 
 exports.availableProducts = async (req, res, next) => {
@@ -91,21 +93,25 @@ exports.setPizzaAvailable = async (req, res, next) => {
 	try {
 		const { id } = req.params;
 
-		const sizes = await SizesModel.findAll({});
-		const types = await TypesModel.findAll({});
+		const sizes = await SizeModel.findAll({});
+		const types = await TypeModel.findAll({});
 
-		const pizzaSizesArr = sizes.map((size) => ({
-			pizzaID: id,
-			sizeID: size.id,
-		}));
+		const productSizesArr = sizes
+			.filter((size) => size.name !== "none")
+			.map((size) => ({
+				ProductId: id,
+				SizeId: size.id,
+			}));
 
-		const pizzaTypesArr = types.map((type) => ({
-			pizzaID: id,
-			typeID: type.id,
-		}));
+		const productTypesArr = types
+			.filter((size) => size.name !== "none")
+			.map((type) => ({
+				ProductId: id,
+				TypeId: type.id,
+			}));
 
-		await PizzaSizesModel.bulkCreate(pizzaSizesArr);
-		await PizzaTypesModel.bulkCreate(pizzaTypesArr);
+		await ProductSizes.bulkCreate(productSizesArr);
+		await ProductTypes.bulkCreate(productTypesArr);
 
 		res.sendStatus(200);
 	} catch (err) {
@@ -119,8 +125,8 @@ exports.setPizzaNotAvailable = async (req, res, next) => {
 
 		if (!id) return next(ApiError.badRequest("Request must have 'id' param"));
 
-		await PizzaSizesModel.destroy({ where: { pizzaID: id } });
-		await PizzaTypesModel.destroy({ where: { pizzaID: id } });
+		await ProductSizes.destroy({ where: { ProductId: id } });
+		await ProductTypes.destroy({ where: { ProductId: id } });
 
 		res.sendStatus(200);
 	} catch (err) {
@@ -130,17 +136,17 @@ exports.setPizzaNotAvailable = async (req, res, next) => {
 
 exports.setPizzaSizeAvailable = async (req, res, next) => {
 	try {
-		const { id, sizeID, available } = req.body;
+		const { id, SizeId, available } = req.body;
 
-		if (!id || !sizeID)
+		if (!id || !SizeId)
 			return next(
-				ApiError.badRequest("Request body must have 'id' and 'sizeID' param")
+				ApiError.badRequest("Request body must have 'id' and 'SizeId' param")
 			);
 
 		if (available) {
-			await PizzaSizesModel.create({ pizzaID: id, sizeID });
+			await ProductSizes.create({ ProductId: id, SizeId });
 		} else {
-			await PizzaSizesModel.destroy({ where: { pizzaID: id, sizeID } });
+			await ProductSizes.destroy({ where: { ProductId: id, SizeId } });
 		}
 		res.sendStatus(200);
 	} catch (err) {
@@ -150,17 +156,17 @@ exports.setPizzaSizeAvailable = async (req, res, next) => {
 
 exports.setPizzaTypeAvailable = async (req, res, next) => {
 	try {
-		const { id, typeID, available } = req.body;
+		const { id, TypeId, available } = req.body;
 
-		if (!id || !typeID)
+		if (!id || !TypeId)
 			return next(
-				ApiError.badRequest("Request body must have 'id' and 'typeID' param")
+				ApiError.badRequest("Request body must have 'id' and 'TypeId' param")
 			);
 
 		if (available) {
-			await PizzaTypesModel.create({ pizzaID: id, typeID });
+			await ProductTypes.create({ ProductId: id, TypeId });
 		} else {
-			await PizzaTypesModel.destroy({ where: { pizzaID: id, typeID } });
+			await ProductTypes.destroy({ where: { ProductId: id, TypeId } });
 		}
 
 		res.sendStatus(200);
