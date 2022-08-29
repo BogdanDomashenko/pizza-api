@@ -8,24 +8,8 @@ const {
 	OrderModel,
 	OrderProductsModel,
 	OrderShippingModel,
+	UserModel,
 } = require("../models/UserModels");
-
-/* exports.getOrder = async (id) => {
-  // const Order = await UserOrdersModel.findOne({
-  //   where: { id },
-  //   include: [{ model: PizzasModel }],
-  //   attributes: ["id", "createdAt"],
-  // });
-
-  const Order = await UserOrdersModel.findOne({
-    where: { id },
-    include: [{ model: PizzaOrdersModel, attributes: ["props", "totalPrice", "count"], include: PizzasModel }],
-  });
-
-  console.log(Order);
-
-  return Order;
-}; */
 
 exports.OrderService = {
 	async create(products, UserId, OrderShipping) {
@@ -35,12 +19,14 @@ exports.OrderService = {
 		);
 
 		let totalPrice = 0;
+		let totalCount = 0;
 
 		for (let product of products) {
 			const { price: productPrice } = await ProductModel.findOne({
 				where: { id: product.id },
 			});
 			totalPrice += productPrice * product.count;
+			totalCount += product.count;
 
 			await OrderProductsModel.create({
 				count: product.count,
@@ -52,7 +38,7 @@ exports.OrderService = {
 			});
 		}
 
-		await order.update({ totalPrice, count: OrderModel.length });
+		await order.update({ totalPrice, totalCount });
 		await order.save();
 
 		return order;
@@ -76,7 +62,7 @@ exports.OrderService = {
 
 		return order;
 	},
-	async getByUser(UserId, page, size) {
+	async getByUser(UserId, size, page) {
 		const { count: totalCount, rows: orders } =
 			await OrderModel.findAndCountAll({
 				where: { UserId },
@@ -96,6 +82,33 @@ exports.OrderService = {
 						SizeModel,
 					],
 				},
+			});
+
+		return { list: orders, totalCount };
+	},
+	async getAll(size, page) {
+		const { count: totalCount, rows: orders } =
+			await OrderModel.findAndCountAll({
+				limit: size,
+				offset: size * page,
+				order: [["createdAt", "DESC"]],
+				attributes: ["id", "status", "createdAt", "totalPrice", "totalCount"],
+				include: [
+					{
+						model: OrderProductsModel,
+						attributes: ["count", "totalPrice"],
+						include: [
+							{
+								model: ProductModel,
+								include: [ProductImage],
+							},
+							TypeModel,
+							SizeModel,
+						],
+					},
+					{ model: UserModel, attributes: ["id", "phoneNumber"] },
+					OrderShippingModel,
+				],
 			});
 
 		return { list: orders, totalCount };

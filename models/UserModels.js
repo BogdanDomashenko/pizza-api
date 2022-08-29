@@ -20,6 +20,7 @@ const OrderModel = sequelize.define(
 			defaultValue: ORDER_STATUSES.processing,
 		},
 		totalPrice: { type: DataTypes.INTEGER },
+		totalCount: { type: DataTypes.INTEGER },
 	},
 	{ timestamps: true }
 );

@@ -1,5 +1,9 @@
 const ApiError = require("../error/ApiError");
-const { UserModel, OrderShippingsModel } = require("../models/UserModels");
+const {
+	UserModel,
+	OrderModel,
+	OrderShippingModel,
+} = require("../models/UserModels");
 const { ROLES } = require("../utils/constants/userRolesConsts");
 const { OrderService } = require("../services/OrderService");
 const { ProductService } = require("../services/ProductService");
@@ -80,7 +84,7 @@ exports.userOrderList = async (req, res, next) => {
 		const page = Number.parseInt(req.query.page);
 		const size = Number.parseInt(req.query.size);
 
-		const orders = await OrderService.getByUser(id, page, size);
+		const orders = await OrderService.getByUser(id, size, page);
 
 		res.json(orders);
 	} catch (error) {
@@ -88,7 +92,19 @@ exports.userOrderList = async (req, res, next) => {
 	}
 };
 
-/* 
+exports.orderList = async (req, res, next) => {
+	try {
+		const page = Number.parseInt(req.query.page);
+		const size = Number.parseInt(req.query.size);
+
+		const orders = await OrderService.getAll(size, page);
+
+		res.json(orders);
+	} catch (error) {
+		next(error);
+	}
+};
+
 exports.updateOrder = async (req, res, next) => {
 	try {
 		const { order } = req.body;
@@ -97,62 +113,19 @@ exports.updateOrder = async (req, res, next) => {
 			next(ApiError.badRequest("'order' param cannot be empty"));
 		}
 
-		await UserOrdersModel.update({ ...order }, { where: { id: order.id } });
+		await OrderModel.update({ ...order }, { where: { id: order.id } });
 
-		res.sendStatus(200);
+		res.sendStatus(201);
 	} catch (err) {
 		next(err);
 	}
 };
 
-exports.orderList = async (req, res, next) => {
-	try {
-		const page = Number.parseInt(req.query.page);
-		const size = Number.parseInt(req.query.size);
-		const { count: totalCount, rows: orders } =
-			await UserOrdersModel.findAndCountAll({
-				limit: size,
-				offset: size * page,
-				order: [["createdAt", "DESC"]],
-				distinct: true,
-				include: [
-					{
-						model: PizzaOrdersModel,
-						attributes: ["props", "totalPrice", "count"],
-						include: PizzasModel,
-					},
-					UserModel,
-				],
-				attributes: ["id", "status", "createdAt"],
-			});
-
-		const deliveryPrice = await DeliveryService.getPrice();
-
-		const mappedOrders = orders.map((x) => {
-			const order = x.get({ plain: true });
-			let totalOrderPrice = deliveryPrice;
-			order.pizzaOrders.forEach((item) => {
-				totalOrderPrice += item.totalPrice;
-			});
-
-			return {
-				...order,
-				totalOrderPrice,
-			};
-		});
-
-		res.json({ list: mappedOrders, totalCount });
-	} catch (error) {
-		next(error);
-	}
-};
-
-
 exports.shippingOrderData = async (req, res, next) => {
 	try {
 		const { id } = req.params;
 
-		const shippingData = await OrderShippingsModel.findOne({
+		const shippingData = await OrderShippingModel.findOne({
 			where: { userOrderID: id },
 		});
 
@@ -161,7 +134,6 @@ exports.shippingOrderData = async (req, res, next) => {
 		next(error);
 	}
 };
-*/
 
 exports.deliveryPrice = async (req, res, next) => {
 	try {
