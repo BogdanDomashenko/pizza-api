@@ -1,9 +1,19 @@
 const ApiError = require("../error/ApiError");
 const {
+<<<<<<< HEAD
 	UserModel,
 	OrderModel,
 	OrderShippingModel,
 } = require("../models/UserModels");
+=======
+	UsersModel,
+	PizzaOrdersModel,
+	UserOrdersModel,
+	ProductModel,
+	OrderShippingsModel,
+} = require("../models/models");
+const { getOrder } = require("../services/OrderService");
+>>>>>>> upd
 const { ROLES } = require("../utils/constants/userRolesConsts");
 const { OrderService } = require("../services/OrderService");
 const { ProductService } = require("../services/ProductService");
@@ -96,6 +106,27 @@ exports.orderList = async (req, res, next) => {
 	try {
 		const page = Number.parseInt(req.query.page);
 		const size = Number.parseInt(req.query.size);
+<<<<<<< HEAD
+=======
+		const { count: totalCount, rows: orders } =
+			await UserOrdersModel.findAndCountAll({
+				limit: size,
+				offset: size * page,
+				order: [["createdAt", "DESC"]],
+				distinct: true,
+				include: [
+					{
+						model: PizzaOrdersModel,
+						attributes: ["props", "totalPrice", "count"],
+						include: ProductModel,
+					},
+					UsersModel,
+				],
+				attributes: ["id", "status", "createdAt"],
+			});
+
+		const deliveryPrice = await DeliveryService.getPrice();
+>>>>>>> upd
 
 		const orders = await OrderService.getAll(size, page);
 
@@ -107,7 +138,31 @@ exports.orderList = async (req, res, next) => {
 
 exports.updateOrder = async (req, res, next) => {
 	try {
+<<<<<<< HEAD
 		const { order } = req.body;
+=======
+		const id = res.locals.id;
+		const page = Number.parseInt(req.query.page);
+		const size = Number.parseInt(req.query.size);
+		const { count: totalCount, rows: orders } =
+			await UserOrdersModel.findAndCountAll({
+				limit: size,
+				offset: size * page,
+				order: [["createdAt", "DESC"]],
+				distinct: true,
+				where: { userID: id },
+				include: [
+					{
+						model: PizzaOrdersModel,
+						attributes: ["props", "totalPrice", "count"],
+						include: ProductModel,
+					},
+				],
+				attributes: ["id", "status", "createdAt"],
+			});
+
+		const deliveryPrice = await DeliveryService.getPrice();
+>>>>>>> upd
 
 		if (!order) {
 			next(ApiError.badRequest("'order' param cannot be empty"));
