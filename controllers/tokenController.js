@@ -31,7 +31,6 @@ exports.accessToken = (req, res, next) => {
 
 exports.refreshToken = (req, res, next) => {
 	try {
-		console.log(req.cookies.refreshToken);
 		if (req.cookies.refreshToken) {
 			jwt.verify(
 				req.cookies.refreshToken || " ",

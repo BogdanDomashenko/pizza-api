@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 
 const ApiError = require("../error/ApiError");
 const { UserModel } = require("../models/UserModels");
+const { ROLES } = require("../utils/constants/userRolesConsts");
 const {
 	generateAccessToken,
 	generateRefreshToken,
@@ -21,7 +22,10 @@ exports.signUp = async (req, res, next) => {
 		}
 
 		if (User && !isSignUpped) {
-			const newUser = await User.update({ password: hashedPassword });
+			const newUser = await User.update({
+				password: hashedPassword,
+				role: ROLES.user,
+			});
 
 			return res.json({
 				id: newUser.id,

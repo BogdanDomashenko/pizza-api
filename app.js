@@ -14,7 +14,7 @@ const orderRouter = require("./routes/order");
 const authRouter = require("./routes/auth");
 const tokenRouter = require("./routes/token");
 const productRouter = require("./routes/product");
-//const statisticsRouter = require("./routes/statistics");
+const statisticsRouter = require("./routes/statistics");
 const userRouter = require("./routes/user");
 const callBacksRouter = require("./routes/callBacks");
 
@@ -61,7 +61,7 @@ app.use("/category", categoryRouter);
 app.use("/order", orderRouter);
 app.use("/auth", authRouter);
 app.use("/product", productRouter);
-//app.use("/statistics", statisticsRouter);
+app.use("/statistics", statisticsRouter);
 app.use("/user", userRouter);
 app.use("/call-backs", callBacksRouter);
 

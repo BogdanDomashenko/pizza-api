@@ -14,9 +14,7 @@ const verifyToken = (req, res, next) => {
 					if (err) return next(ApiError.badRequest("Access token not valid"));
 
 					const UserDB = await UserModel.findOne({ where: { id: user.id } });
-					// if(UserDB.id !== user.id || UserDB.phoneNumber !== user.phoneNumber || UserDB.role !== user.role) {
-					// 	return next(ApiError.conflict("User data is out of date"));
-					// }
+					if (!UserDB) return next(ApiError.badRequest("Access token error"));
 					res.locals.id = UserDB.id;
 					res.locals.phoneNumber = UserDB.phoneNumber;
 					res.locals.role = UserDB.role;
