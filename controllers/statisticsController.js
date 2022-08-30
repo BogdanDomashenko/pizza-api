@@ -12,11 +12,7 @@ const {
 
 exports.productPopularity = async (req, res, next) => {
 	try {
-<<<<<<< HEAD
-		const products = await ProductModel.findAll({
-			include: [{ model: OrderProductsModel }],
-=======
-		const pizzas = await ProductModel.findAll({
+		const pizzas = await PizzasModel.findAll({
 			include: [{ model: PizzaOrdersModel }],
 >>>>>>> upd
 		});
@@ -38,11 +34,7 @@ exports.salesBy = async (req, res, next) => {
 		const by = req.query.by;
 		const num = Number.parseInt(req.query.num);
 
-<<<<<<< HEAD
-		const products = await ProductModel.findAll({
-=======
-		const pizzas = await ProductModel.findAll({
->>>>>>> upd
+		const pizzas = await PizzasModel.findAll({
 			include: [
 				{
 					model: OrderProductsModel,
